@@ -1,0 +1,15 @@
+---
+- name: install python2 and pip
+  hosts: all
+  become: true
+  gather_facts: no
+  tasks:
+    - name: bootstrap python2 required for ansible modules
+      raw: 'test -e /usr/bin/python || (apt -y update && apt install -y python-simplejson)'
+      register: output
+      changed_when: output.stdout != ""
+
+    - name: install python-pip
+      apt:
+        name: python-pip
+        state: latest

@@ -1,0 +1,8 @@
+---
+- include: base.yml
+
+- name: Maintain users
+  hosts: all
+  become: true
+  roles:
+    - users

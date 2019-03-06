@@ -1,0 +1,59 @@
+---
+- name: 'Include openvpn-base'
+  include_role:
+    name: openvpn-base
+
+- name: mkdir /etc/iptables/
+  file:
+    path: /etc/iptables/
+    state: directory
+
+- name: 'Iptables 22, 1194, tun0 accept'
+  iptables_raw:
+    name: 'openvpn ssh tun filter'
+    backup: yes
+    rules: |
+      -A INPUT -p tcp -m multiport --dports 22 -j ACCEPT
+      -A INPUT -p udp -m multiport --dports 1194 -j ACCEPT
+      -A INPUT -i tun0 -j ACCEPT
+
+- name: 'Iptables tun0 MASQUERADE'
+  iptables_raw:
+    name: 'tun MASQUERADE'
+    backup: yes
+    table: nat
+    rules: |
+      -A POSTROUTING -o tun0 -j MASQUERADE
+
+- name: render ipp.txt
+  template:
+    src: templates/ipp.txt.j2
+    dest: /etc/openvpn/ipp.txt
+    mode: '0775'
+
+- name: render ccd/<server>
+  copy:
+    content: "{{ item.content }}"
+    dest: "/etc/openvpn/ccd/{{ item.name }}"
+    mode: '0664'
+  with_items: "{{ openvpn_server_clients }}"
+  notify:
+    - restart openvpn
+    - restart openvpn_server
+
+- name: create openvpn_client group
+  group:
+    name: openvpn_client
+    state: present
+
+- name: create openvpn_client user
+  user:
+    name: openvpn_client
+    group: openvpn_client
+
+- name: mkdir /etc/openvpn/client_zip_archives/
+  file:
+    path: /etc/openvpn/client_zip_archives/
+    state: directory
+    owner: openvpn_client
+    group: openvpn_client

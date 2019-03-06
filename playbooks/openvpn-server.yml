@@ -1,0 +1,8 @@
+---
+- include: base.yml
+
+- hosts: openvpn-server
+  become: yes
+  roles:
+    - role: Stouts.openvpn
+    - role: openvpn-server

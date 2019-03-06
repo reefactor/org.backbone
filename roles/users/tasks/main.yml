@@ -1,0 +1,52 @@
+---
+- name: Make sure we have the 'dev' group
+  become: yes
+  group:
+    name: dev
+    state: present
+
+- name: Create docker group
+  group:
+    name: docker
+    state: present
+
+- name: Add dev user
+  user:
+    name: dev
+    state: present
+    shell: /bin/bash
+    groups: sudo,docker,dev
+    comment: "Developer common passwordless user"
+
+- name: Allow 'dev' to have passwordless sudo
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%dev'
+    line: '%dev ALL=(ALL) NOPASSWD: ALL'
+
+- name: Add users
+  vars:
+    user: "{{ item.name }}"
+    key: "{{ lookup('file', '{{item.key}}') }}"
+    comment: "{{ item.comment }}"
+  include: configure_user.yml
+  with_items:
+   - { name: "den", key: "reefactor.keys", comment: "Den" }
+
+- name: Delete users
+  user:
+    name: "{{ item.name }}"
+    state: absent
+    remove: yes
+  with_items:
+  - { name: "exmember" }
+
+- name: Authorize users to impersonate as dev
+  authorized_key:
+    user: "dev"
+    exclusive: True
+    key: "{{
+      lookup('file', 'reefactor.keys') + '\n' +
+      lookup('file', 'reefactor.keys')
+    }}"

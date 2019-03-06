@@ -1,0 +1,6 @@
+before_script:
+  - echo "RUNNING IN $PWD"
+
+infra_as_code:
+  script:
+    - bash tests/runtests.sh
