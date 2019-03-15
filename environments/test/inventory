@@ -1,4 +1,8 @@
 
+[gitlab]
+gitlab-server ansible_host=192.168.10.101 ansible_user=vagrant
+gitlab-runner1 ansible_host=192.168.10.102 ansible_user=vagrant
+
 [openvpn-server]
 server ansible_host=192.168.10.101 ansible_user=vagrant
 

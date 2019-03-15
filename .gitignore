@@ -1,5 +1,8 @@
 .vagrant
 .idea/
 
+# vagrant logs
+/ubuntu-xenial-16.04-cloudimg-console.log
+
 # installed via requirements.yml
 /roles/Stouts.openvpn/

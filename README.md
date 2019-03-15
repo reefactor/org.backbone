@@ -105,4 +105,5 @@ tests/test_deploy_users.sh
 * Team messenger
 * Update Stouts.openvpn 2.4.0 -> 2.4.1
 * Upgrade ansible 2.3.0 -> latest
+* Upgrade iptables_raw
 

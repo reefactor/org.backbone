@@ -1,0 +1,2 @@
+gitlab_ci_url: http://192.168.10.101/ci
+gitlab_shared_runners_registration_token: 10120023f3e23t23l

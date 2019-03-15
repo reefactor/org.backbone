@@ -1,0 +1,64 @@
+- name: create data storage /srv/docker/gitlab
+  file:
+    path: "/srv/docker/gitlab"
+    state: directory
+    owner: dev
+
+- name: create /home/dev/docker-gitlab
+  file:
+    path: "/home/dev/docker-gitlab"
+    state: directory
+
+- name: render docker-compose.yml
+  template:
+    src: templates/docker-compose.yml.j2
+    dest: /home/dev/docker-gitlab/docker-compose.yml
+    owner: dev
+    mode: 0655
+
+- name: start gitlab docker
+  docker_service:
+    project_src: /home/dev/docker-gitlab
+    files:
+      - docker-compose.yml
+
+- name: wait gitlab webserver is up (build nodejs/webpack frontend takes ~10min)
+  wait_for:
+    host: "{{ ansible_host }}"
+    port: 80
+    state: started
+    timeout: 800
+
+- name: ensure gitlab webserver is OK
+  uri:
+    url: "http://{{ ansible_host }}/gitlab/users/sign_in"
+    status_code: 200 # returns 502 untill ready
+  register: result
+  until: result.status == 200
+  retries: 40
+  delay: 10
+
+- name: start gitlab-runner docker
+  # based on https://docs.gitlab.com/runner/install/docker.html
+  shell: |
+    docker run -d --name backbone-lab-runner --restart always \
+      -v /srv/gitlab-runner/config:/etc/gitlab-runner \
+      -v /var/run/docker.sock:/var/run/docker.sock \
+      gitlab/gitlab-runner:latest \
+    && touch ansible.runner-started.flag
+  args:
+    chdir: /home/dev/docker-gitlab/
+    creates: ansible.runner-started.flag
+
+- name: register gitlab-runner ({{gitlab_runner_name}}) into gitlab CI
+  shell: |
+    docker exec backbone-lab-runner gitlab-runner register --non-interactive \
+      --name {{gitlab_runner_name}} \
+      --url http://{{ ansible_host }}/gitlab/ci \
+      --registration-token {{gitlab_shared_runners_registration_token}} \
+      --docker-image=python:3.6.6 \
+      --executor=docker \
+    && touch ansible.runner-registered.flag
+  args:
+    chdir: /home/dev/docker-gitlab/
+    creates: ansible.runner-registered.flag

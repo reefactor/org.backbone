@@ -1,0 +1,7 @@
+---
+ docker_repo_signature: 58118E89F3A912897C070ADBF76221572C52609D
+ docker_repo_url: hkp://p80.pool.sks-keyservers.net:80
+ docker_repo: deb https://apt.dockerproject.org/repo ubuntu-xenial main
+ docker_package: docker-engine
+ docker_apt_cache_valid_time: 600
+ docker_user: dev

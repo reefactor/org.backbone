@@ -1,10 +1,9 @@
-#!/usr/bin/env bash
 set -e
 
 function teardown()
 {
     local exit_code=${1:-$?}
-    vagrant destroy -f
+    # vagrant destroy -f
     echo $0 status: $exit_code
 }
 trap teardown EXIT

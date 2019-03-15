@@ -1,0 +1,52 @@
+# based on official docs
+# https://docs.gitlab.com/runner/install/linux-manually.html
+# https://docs.gitlab.com/runner/register/index.html
+- name: Add gitlab-runner user
+  user:
+    name: gitlab-runner
+    state: present
+    shell: /bin/bash
+    groups: docker
+    createhome: yes
+    comment: "Gitlab Runner node"
+    # salted gitlab_runner_user_pwd with `mkpasswd --method=sha-512`
+    password: '$6$Vwnnb1h.oCcWSdb$xfVs707VVgVLNHE2CQ022uhfUcFWP5HcQJxqnJMVroW69HjTcpMWu7LtS7Rrt7dEsROtdsUpVzJQkHEq6gSNu0'
+
+- name: download gitlab-runner package
+  get_url:
+    url: https://gitlab-runner-downloads.s3.amazonaws.com/{{gitlab_runner_version}}/binaries/gitlab-runner-linux-amd64
+    dest: /tmp/gitlab-runner-linux-amd64-{{gitlab_runner_version}}
+    owner: gitlab-runner
+
+- name: uninstall existing gitlab-runner service
+  shell: |
+    set +e
+    /usr/local/bin/gitlab-runner unregister --name {{gitlab_ci_runner_name}}
+    /usr/local/bin/gitlab-runner stop
+    /usr/local/bin/gitlab-runner uninstall
+    /usr/local/bin/gitlab-runner status
+    set -e
+    rm /usr/local/bin/gitlab-runner
+  args:
+    removes: /usr/local/bin/gitlab-runner
+
+- name: install gitlab-runner service
+  shell: |
+    set -e
+    cp /tmp/gitlab-runner-linux-amd64-{{gitlab_runner_version}} /usr/local/bin/gitlab-runner
+    chmod +x /usr/local/bin/gitlab-runner
+    /usr/local/bin/gitlab-runner install --user=gitlab-runner --working-directory=/home/gitlab-runner
+  args:
+    creates: /usr/local/bin/gitlab-runner
+
+- name: start gitlab-runner service
+  command: gitlab-runner start
+
+- name: register gitlab-runner {{gitlab_ci_runner_name}} into gitlab CI {{gitlab_ci_url}}
+  command: |
+    /usr/local/bin/gitlab-runner register --non-interactive \
+      --name {{gitlab_ci_runner_name}} \
+      --url {{gitlab_ci_url}} \
+      --registration-token {{gitlab_shared_runners_registration_token}} \
+      --limit 1 \
+      --executor=shell

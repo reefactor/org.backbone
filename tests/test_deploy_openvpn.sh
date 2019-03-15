@@ -2,9 +2,10 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source $DIR/base.sh
 
+# create sandbox
+vagrant up
 
 # run playbook in vagrant sandbox
-vagrant up
 ansible-playbook -i environments/test/inventory playbooks/openvpn-server.yml
 ansible-playbook -i environments/test/inventory playbooks/openvpn-client.yml
 
@@ -18,6 +19,7 @@ rm -r /tmp/*.zip
 # wait network bootstrap
 sleep 3
 
+# check
 ssh -o StrictHostKeyChecking=no vagrant@$vmbox2 "ping -c 3 -w 3 10.3.0.1"
 if [ $? -ne 0 ]; then
     echo 'FAILED ping testvpnuser -> vpnserver'

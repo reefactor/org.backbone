@@ -1,0 +1,9 @@
+- include: base.yml
+- name: Setup gitlab
+  hosts: gitlab-server
+  gather_facts: no
+  become: yes
+  roles:
+  - users
+  - docker
+  - gitlab-server

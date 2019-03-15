@@ -1,0 +1,4 @@
+gitlab_ci_url: http://gitlab.backbone/ci
+gitlab_runner_user_pwd: pBWe7I32eHC0erf32
+gitlab_ci_runner_name: backbone_shell_runner
+gitlab_runner_version: v11.8.0

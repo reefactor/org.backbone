@@ -1,0 +1,7 @@
+- include: python2.yml
+- hosts: all
+  gather_facts: no
+  become: yes
+  roles:
+  - docker
+  - gitlab-runner
