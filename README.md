@@ -9,9 +9,9 @@ in [ansible](https://www.ansible.com/) playbooks.
 ### Features
 * [OpenVPN](roles/openvpn-base/tasks/main.yml) and [keys management](environments/test/group_vars/openvpn-server) based on [Stouts.openvpn ansible role](https://github.com/Stouts/Stouts.openvpn/)
 * [SSH users ACL and management](roles/users/tasks/main.yml) via pub ssh keys and common sudoer user
-* [GitLab CE](roles/gitlab-server/templates/docker-compose.yml.j2) on docker based on [sameersbn's pack](based on https://github.com/sameersbn/docker-gitlab)
+* [GitLab CE](roles/gitlab-server/templates/docker-compose.yml.j2) on docker based on [sameersbn's pack](https://github.com/sameersbn/docker-gitlab)
 * [gitlab-runner](roles/gitlab-runner/tasks/main.yml) for GitLab CI
-* TODO: DNS, monitoring and many more in [roadmap](#Roadmap)
+* TODO: DNS, monitoring and many more in [roadmap](#roadmap)
 
 
 ### Prerequisites
@@ -38,8 +38,8 @@ ansible-playbook playbooks/openvpn-server.yml
 ```
 
 ##### Add host to VPN network
-1. Add *newhost* into **openvpn_clients** and **openvpn_server_clients** lists of environments/test/group_vars/openvpn-server file.
-2. Add *newhost* credentials to the **openvpn-client** group of [environments/test/inventory]() file.
+1. Add *newhost* into **openvpn_clients** and **openvpn_server_clients** lists of [environments/test/group_vars/openvpn-server](environments/test/group_vars/openvpn-server)
+2. Add *newhost* credentials to the **openvpn-client** group of [environments/test/inventory](environments/test/inventory) file.
 Update OpenVPN server (generate keys for client):
 ```bash
 ansible-playbook -i environments/test/inventory playbooks/openvpn-server.yml
