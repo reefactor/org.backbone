@@ -1,42 +1,45 @@
 # org.backbone
 
-Build your own team IT infrastructure with blackjack vpn and gitlab CI.
+Build your own team IT infrastructure with blackjack OpenVPN and GitLab CI.
 
-From zero to production in 30 minutes.
-
-Maintain _infrastructure as a code_ with ansible playbooks.
-
-Target OS - debian based linux, ubuntu recommended.
+Build & maintain [infrastructure as code](https://en.wikipedia.org/wiki/Infrastructure_as_code) 
+in [ansible](https://www.ansible.com/) playbooks.
 
  
 ### Features
-* Secure vpn intranet with openvpn and automated vpn keys management (based on [Stouts.openvpn](https://github.com/Stouts/Stouts.openvpn/) )
-* Easy users ssh access management via pub ssh keys and common dev sudo user
-* TODO gitlab, monitoring and more in Roadmap below
+* [OpenVPN](roles/openvpn-base/tasks/main.yml) and [keys management](environments/test/group_vars/openvpn-server) based on [Stouts.openvpn ansible role](https://github.com/Stouts/Stouts.openvpn/)
+* [SSH users ACL and management](roles/users/tasks/main.yml) via pub ssh keys and common sudoer user
+* [GitLab CE](roles/gitlab-server/templates/docker-compose.yml.j2) on docker based on [sameersbn's pack](based on https://github.com/sameersbn/docker-gitlab)
+* [gitlab-runner](roles/gitlab-runner/tasks/main.yml) for GitLab CI
+* TODO: DNS, monitoring and many more in [roadmap](#Roadmap)
 
 
 ### Prerequisites
 
-Vagrant, ansible and dependencies.
+* Python to run ansible playbooks
+* Vagrant with Virtualbox for automated testing sandbox
 ```bash
-curl -O https://releases.hashicorp.com/vagrant/2.2.4/vagrant_2.2.4_x86_64.deb
-dpkg -i vagrant_2.2.4_x86_64.deb
 pip install -r requirements.txt
 ansible-galaxy install -r requirements.yml
+curl -O https://releases.hashicorp.com/vagrant/2.2.4/vagrant_2.2.4_x86_64.deb
+dpkg -i vagrant_2.2.4_x86_64.deb
+apt install virtualbox
 ```
 
 ### Use cases
+_From zero to production in 30 minutes or less_
 
+Target OS for deployment - debian based linux.
 
 #### VPN 
 ##### Setup openvpn server  
-```
+```bash
 ansible-playbook playbooks/openvpn-server.yml
 ```
 
 ##### Add host to VPN network
 1. Add *newhost* into **openvpn_clients** and **openvpn_server_clients** lists of environments/test/group_vars/openvpn-server file.
-2. Add *newhost* credentials to the **openvpn-client** group of environments/test/inventory file.
+2. Add *newhost* credentials to the **openvpn-client** group of [environments/test/inventory]() file.
 Update OpenVPN server (generate keys for client):
 ```bash
 ansible-playbook -i environments/test/inventory playbooks/openvpn-server.yml
@@ -89,15 +92,16 @@ ansible-playbook playbooks/users.yml
 ```bash
 tests/test_deploy_openvpn.sh
 tests/test_deploy_users.sh
+tests/test_deploy_gitlab.sh
 ```
 
 ### Roadmap
 
 #### TODO
 
-* Private git server with Gitlab CE + CI gitlab-runner
-* Provisioning with Terraform in addition to Vagrant
+* DNS
 * Monitoring infrastructure with collectd & Graphite, Grafana, Sentry
+* Provisioning with Terraform in addition to Vagrant
 * Logging & analytics for public services with elastic & kibana
 * Artifacts storage with Nexus repository manager 3
 * Scheduled backup jobs
@@ -106,4 +110,3 @@ tests/test_deploy_users.sh
 * Update Stouts.openvpn 2.4.0 -> 2.4.1
 * Upgrade ansible 2.3.0 -> latest
 * Upgrade iptables_raw
-
