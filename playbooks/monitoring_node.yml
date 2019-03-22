@@ -1,0 +1,7 @@
+- include: base.yml
+- name: monitoring node
+  hosts: monitored
+  gather_facts: no
+  become: yes
+  roles:
+  - collectd_beacon

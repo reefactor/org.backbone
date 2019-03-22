@@ -7,11 +7,12 @@ in [ansible](https://www.ansible.com/) playbooks.
 
  
 ### Features
-* [OpenVPN](roles/openvpn-base/tasks/main.yml) and [keys management](environments/test/group_vars/openvpn-server) based on [Stouts.openvpn ansible role](https://github.com/Stouts/Stouts.openvpn/)
-* [SSH users ACL and management](roles/users/tasks/main.yml) via pub ssh keys and common sudoer user
-* [GitLab CE](roles/gitlab-server/templates/docker-compose.yml.j2) on docker based on [sameersbn's pack](https://github.com/sameersbn/docker-gitlab)
-* [gitlab-runner](roles/gitlab-runner/tasks/main.yml) for GitLab CI
-* TODO: DNS, monitoring and many more in [roadmap](#roadmap)
+* **Privacy:** [OpenVPN](roles/openvpn-base/tasks/main.yml) and [keys management](environments/test/group_vars/openvpn-server) based on [Stouts.openvpn ansible role](https://github.com/Stouts/Stouts.openvpn/)
+* **Security:** [SSH users ACL and management](roles/users/tasks/main.yml) via pub ssh keys and common sudoer user
+* **Collaboration:** [GitLab CE](roles/gitlab-server/templates/docker-compose.yml.j2) on docker based on [sameersbn's pack](https://github.com/sameersbn/docker-gitlab)
+* **Continuous integration:** [gitlab-runner](roles/gitlab-runner/tasks/main.yml) for GitLab CI
+* **Monitoring & alerting:** [Infrastructure monitoring](roles/monitoring_hub) with [collectd collector](roles/collectd_beacon), [Graphite storage and Grafana viz UI](roles/monitoring_hub/files/docker-grafana-graphite/README.md) based on [kamon](/kamon-io/docker-grafana-graphite)
+* TODO: DNS, and many more in [roadmap](#roadmap)
 
 
 ### Prerequisites
@@ -93,20 +94,19 @@ ansible-playbook playbooks/users.yml
 tests/test_deploy_openvpn.sh
 tests/test_deploy_users.sh
 tests/test_deploy_gitlab.sh
+tests/test_deploy_monitoring.sh
 ```
 
 ### Roadmap
 
-#### TODO
-
-* DNS
-* Monitoring infrastructure with collectd & Graphite, Grafana, Sentry
+* DNS server
 * Provisioning with Terraform in addition to Vagrant
+* [Sentry storage](https://sentry.io/)
 * Logging & analytics for public services with elastic & kibana
 * Artifacts storage with Nexus repository manager 3
 * Scheduled backup jobs
 * Replace Graphite with M3DB
-* Team messenger
+* Team messenger (alerts sink from grafana)
 * Update Stouts.openvpn 2.4.0 -> 2.4.1
 * Upgrade ansible 2.3.0 -> latest
 * Upgrade iptables_raw

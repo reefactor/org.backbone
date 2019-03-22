@@ -1,0 +1,2 @@
+monitoring_graphite_host: 192.168.10.101
+monitoring_grafana_public_root_url: http://192.168.10.101/

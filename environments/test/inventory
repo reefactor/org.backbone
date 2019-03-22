@@ -3,8 +3,12 @@
 gitlab-server ansible_host=192.168.10.101 ansible_user=vagrant
 gitlab-runner1 ansible_host=192.168.10.102 ansible_user=vagrant
 
-[openvpn-server]
-server ansible_host=192.168.10.101 ansible_user=vagrant
+[openvpn]
+openvpn-server ansible_host=192.168.10.101 ansible_user=vagrant
 
 [openvpn-clients]
 user1 ansible_host=192.168.10.102 ansible_user=vagrant openvpn_client_name=testvpnuser
+
+[monitored]
+eye ansible_host=192.168.10.101 ansible_user=vagrant
+beacon1 ansible_host=192.168.10.102 ansible_user=vagrant

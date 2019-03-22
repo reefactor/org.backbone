@@ -1,0 +1,40 @@
+- name: install hddtemp
+  apt:
+    name: hddtemp
+    state: present
+
+- name: enable hddtemp RUN_DAEMON
+  lineinfile:
+    dest: /etc/default/hddtemp
+    state: present
+    regexp: '^RUN_DAEMON='
+    line: 'RUN_DAEMON="true"'
+
+- name: restart hddtemp
+  service:
+    name: hddtemp
+    state: restarted
+
+- name: install collectd
+  apt:
+    name: collectd
+    state: present
+
+- name: install collectd-cuda (Python2.7)
+  shell: |
+    pip2 install collectd-cuda
+
+- name: configure collectd.conf to send metrics to '{{monitoring_graphite_host}}'
+  template:
+    src: templates/collectd.conf.j2
+    dest: /etc/collectd/collectd.conf
+
+- name: write python-config.conf
+  copy:
+    src: files/python-config.conf
+    dest: /etc/collectd/collectd.conf.d/python-config.conf
+
+- name: restart collectd
+  service:
+    name: collectd
+    state: restarted

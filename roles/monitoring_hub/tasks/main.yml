@@ -1,0 +1,20 @@
+- name: copy docker-grafana-graphite files
+  copy:
+    src: files/docker-grafana-graphite
+    dest: /srv
+    owner: dev
+
+- name: configure grafana.. pub URL {{monitoring_grafana_public_root_url}}
+  lineinfile:
+    dest: /srv/docker-grafana-graphite/grafana/custom.ini
+    state: present
+    regexp: '^;root_url = %(protocol)s://%(domain)s:%(http_port)s/'
+    line: 'root_url = {{monitoring_grafana_public_root_url}}  # %(protocol)s://%(domain)s:%(http_port)s/'
+
+- name: build and start docker container
+  shell: |
+    make prep
+    docker-compose build
+    docker-compose up -d
+  args:
+    chdir: /srv/docker-grafana-graphite
