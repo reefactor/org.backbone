@@ -5,7 +5,7 @@
 
 - name: Extract ovpn client zip into /etc/openvpn
   unarchive:
-    src: /tmp/{{openvpn_client_name}}.zip
+    src: ../vpnkeys/{{openvpn_client_name}}.zip
     dest: /etc/openvpn/
 
 - name: Rename /etc/openvpn/client.ovpn to client.conf

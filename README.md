@@ -56,7 +56,7 @@ ansible-playbook -i environments/test/inventory playbooks/openvpn-client.yml --l
 ```bash
 ansible-playbook -i environments/test/inventory playbooks/openvpn-server.yml
 ansible-playbook -i environments/test/inventory playbooks/openvpn-client.yml
-ls -l /tmp/newuser.zip
+ls -l ./vpnkeys/newuser.zip
 ```
 
 ##### Revoke VPN access

@@ -16,7 +16,7 @@
     - name: 'Fetch zip archive with client credentials from openvpn-server host'
       fetch:
         src: "/etc/openvpn/client_zip_archives/{{item}}.zip"
-        dest: /tmp/
+        dest: ../vpnkeys/
         flat: yes
       with_items: "{{ openvpn_clients }}"
 
