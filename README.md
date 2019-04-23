@@ -12,6 +12,7 @@ in [ansible](https://www.ansible.com/) playbooks.
 * **Collaboration:** [GitLab CE](roles/gitlab-server/templates/docker-compose.yml.j2) on docker based on [sameersbn's pack](https://github.com/sameersbn/docker-gitlab)
 * **Continuous integration:** [gitlab-runner](roles/gitlab-runner/tasks/main.yml) for GitLab CI
 * **Monitoring & alerting:** [Infrastructure monitoring](roles/monitoring_hub) with [collectd collector](roles/collectd_beacon), [Graphite storage and Grafana viz UI](roles/monitoring_hub/files/docker-grafana-graphite/README.md) based on [kamon](/kamon-io/docker-grafana-graphite)
+* **Frontend:** [to public web via TLS termination proxy based on nginx](roles/nginx)
 * TODO: DNS, and many more in [roadmap](#roadmap)
 
 

@@ -1,0 +1,22 @@
+---
+- name: install TLS certs
+  copy: src={{ item.src }} dest={{ item.dest }} owner=dev
+  with_items:
+    - { src: 'files/backbone.key', dest: '/etc/ssl/private/' }
+    - { src: 'files/backbone.ca-bundle.crt', dest: '/etc/ssl/certs/' }
+
+- name: update apt
+  apt: update_cache=yes
+
+- name: install nginx
+  apt: name=nginx-full state=present
+- name: enable nginx
+  service: name=nginx state=started enabled=yes
+
+- name: backup /etc/nginx/sites-enabled/default
+  copy: src=/etc/nginx/sites-enabled/default dest=/etc/nginx/.default.latest.backup remote_src=yes
+
+- name: render /etc/nginx/sites-enabled/default
+  template: src=default.j2 dest=/etc/nginx/sites-enabled/default
+  notify:
+  - restart nginx
