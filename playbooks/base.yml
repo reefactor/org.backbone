@@ -1,2 +1,8 @@
 ---
 - include: python2.yml
+- name: base
+  hosts: all
+  become: true
+  tasks:
+    - hostname:
+        name: "{{inventory_hostname}}"
