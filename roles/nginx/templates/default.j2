@@ -22,9 +22,10 @@ server {
     #
     # include snippets/snakeoil.conf;
 
-    ssl on;
-    ssl_certificate /etc/ssl/certs/backbone.ca-bundle.crt;
-    ssl_certificate_key /etc/ssl/private/backbone.key;
+    # TODO certbot
+    # ssl on;
+    # ssl_certificate /etc/ssl/certs/backbone.ca-bundle.crt;
+    # ssl_certificate_key /etc/ssl/private/backbone.key;
     ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
     ssl_session_timeout 1d;
     ssl_session_cache shared:SSL:50m;

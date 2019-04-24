@@ -13,6 +13,7 @@ in [ansible](https://www.ansible.com/) playbooks.
 * **Continuous integration:** [gitlab-runner](roles/gitlab-runner/tasks/main.yml) for GitLab CI
 * **Monitoring & alerting:** [Infrastructure monitoring](roles/monitoring_hub) with [collectd collector](roles/collectd_beacon), [Graphite storage and Grafana viz UI](roles/monitoring_hub/files/docker-grafana-graphite/README.md) based on [kamon](/kamon-io/docker-grafana-graphite)
 * **Frontend:** [to public web via TLS termination proxy based on nginx](roles/nginx)
+* **Distribution server:** [storage for build artifacts and docker registry](roles/distribution_hub) based on [Nexus Repository Manager 3](/sonatype/docker-nexus3)
 * TODO: DNS, and many more in [roadmap](#roadmap)
 
 
@@ -91,20 +92,15 @@ ansible-playbook playbooks/users.yml
 
 ### Tests
 
-```bash
-tests/test_deploy_openvpn.sh
-tests/test_deploy_users.sh
-tests/test_deploy_gitlab.sh
-tests/test_deploy_monitoring.sh
-```
+[See example use cases tests](tests)
 
 ### Roadmap
 
 * DNS server
+* Automate SSL certs with certbot (with https://certbot.eff.org/lets-encrypt/ubuntuxenial-nginx)
 * Provisioning with Terraform in addition to Vagrant
 * [Sentry storage](https://sentry.io/)
 * Logging & analytics for public services with elastic & kibana
-* Artifacts storage with Nexus repository manager 3
 * Scheduled backup jobs
 * Replace Graphite with M3DB
 * Team messenger (alerts sink from grafana)

@@ -1,0 +1,9 @@
+- include: base.yml
+- name : distribution hub
+  hosts: distribution-hub
+  become: yes
+  roles:
+  - users
+  - docker
+  - nginx
+  - distribution_hub

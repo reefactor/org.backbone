@@ -53,7 +53,7 @@ Vagrant.configure("2") do |config|
     # https://stackoverflow.com/questions/22575261/vagrant-stuck-connection-timeout-retrying
     # vb.gui = true
     # reduce first-time boot long waiting (600 sec default timeout)
-    config.vm.boot_timeout = 60
+    config.vm.boot_timeout = 120
   end
 
   config.vm.define 'vmbox1' do |vmbox|

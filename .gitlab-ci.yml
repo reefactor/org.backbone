@@ -1,6 +1,7 @@
-before_script:
-  - echo "RUNNING IN $PWD"
-
 infra_as_code:
   script:
-    - bash tests/runtests.sh
+    - tests/test_deploy_openvpn.sh
+    - tests/test_deploy_users.sh
+    - tests/test_deploy_gitlab.sh
+    - tests/test_deploy_monitoring.sh
+    - tests/test_deploy_distribution_hub.sh

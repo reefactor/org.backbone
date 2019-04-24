@@ -1,15 +1,31 @@
 ---
-- name: install TLS certs
-  copy: src={{ item.src }} dest={{ item.dest }} owner=dev
-  with_items:
-    - { src: 'files/backbone.key', dest: '/etc/ssl/private/' }
-    - { src: 'files/backbone.ca-bundle.crt', dest: '/etc/ssl/certs/' }
+- name: ubuntu | ensuring Ubuntu universe repo is enabled ({{ ansible_distribution_version }} >= 16.04)
+  apt_repository:
+    repo: "deb http://us.archive.ubuntu.com/ubuntu {{ ansible_distribution_release|lower }} universe"
+    state: present
+  when: >
+        ansible_distribution_version >= '16.04'
+
+- apt_repository:
+    repo: 'ppa:certbot/certbot'
+
+#- name: install TLS certs
+#  copy: src={{ item.src }} dest={{ item.dest }} owner=dev
+#  with_items:
+#    - { src: 'files/backbone.key', dest: '/etc/ssl/private/' }
+#    - { src: 'files/backbone.ca-bundle.crt', dest: '/etc/ssl/certs/' }
 
 - name: update apt
   apt: update_cache=yes
 
-- name: install nginx
-  apt: name=nginx-full state=present
+- apt:
+    name: "{{ item }}"
+    update_cache: yes
+  with_items:
+    - certbot
+    - python-certbot-nginx
+    - nginx-full
+
 - name: enable nginx
   service: name=nginx state=started enabled=yes
 

@@ -12,3 +12,6 @@ user1 ansible_host=192.168.10.102 ansible_user=vagrant openvpn_client_name=testv
 [monitored]
 eye ansible_host=192.168.10.101 ansible_user=vagrant
 beacon1 ansible_host=192.168.10.102 ansible_user=vagrant
+
+[distribution-hub]
+pubhub ansible_host=192.168.10.101 ansible_user=vagrant
