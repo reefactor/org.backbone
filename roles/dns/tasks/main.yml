@@ -1,0 +1,28 @@
+#
+# BIND DNS server bundled with the Webmin interface.
+# Based on https://github.com/sameersbn/docker-bind
+#
+- name: data directory
+  file:
+    path: "{{ item }}"
+    recurse: yes
+    state: directory
+    owner: root
+    group: docker
+    # TODO strict permissions after resolving docker mounted volume permission issues
+    mode: 0777
+  with_items:
+    - /dns/data
+
+- name: deploy config docker-compose.yml
+  copy:
+    src: files/docker-compose.yml
+    owner: dev
+    dest: /dns/
+
+- name: build & start bind docker container
+  shell: |
+    docker-compose build
+    docker-compose up -d
+  args:
+    chdir: /dns

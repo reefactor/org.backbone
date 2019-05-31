@@ -1,0 +1,18 @@
+#
+# BIND DNS server bundled with the Webmin interface.
+# Based on https://github.com/sameersbn/docker-bind/blob/master/docker-compose.yml
+#
+version: '2.1'
+
+services:
+  bind:
+    restart: unless-stopped
+    image: sameersbn/bind:9.11.3-20190315
+    ports:
+    - "531:53/udp"
+    - "531:53/tcp"
+    - "10000:10000/tcp"
+    volumes:
+    - /srv/docker/bind:/data
+    environment:
+    - ROOT_PASSWORD=secretpassword

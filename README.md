@@ -2,7 +2,7 @@
 
 Build your own team IT infrastructure with blackjack OpenVPN and GitLab CI.
 
-Build & maintain [infrastructure as code](https://en.wikipedia.org/wiki/Infrastructure_as_code) 
+Deploy and maintain [infrastructure as code](https://en.wikipedia.org/wiki/Infrastructure_as_code) 
 in [ansible](https://www.ansible.com/) playbooks.
 
  
@@ -14,7 +14,8 @@ in [ansible](https://www.ansible.com/) playbooks.
 * **Monitoring & alerting:** [Infrastructure monitoring](roles/monitoring_hub) with [collectd collector](roles/collectd_beacon), [Graphite storage and Grafana viz UI](roles/monitoring_hub/files/docker-grafana-graphite/README.md) based on [kamon](/kamon-io/docker-grafana-graphite)
 * **Frontend:** [to public web via TLS termination proxy based on nginx](roles/nginx)
 * **Distribution server:** [storage for build artifacts and docker registry](roles/distribution_hub) based on [Nexus Repository Manager 3](/sonatype/docker-nexus3)
-* TODO: DNS, and many more in [roadmap](#roadmap)
+* **DNS server**. BIND DNS server bundled with the Webmin UI based on [sameersbn's docker-bind](/sameersbn/docker-bind)
+* .. and many more in the [roadmap](#roadmap)
 
 
 ### Prerequisites
@@ -29,25 +30,24 @@ dpkg -i vagrant_2.2.4_x86_64.deb
 apt install virtualbox
 ```
 
-### Use cases
+### HOW-TO
 _From zero to production in 30 minutes or less_
 
-Target OS for deployment - debian based linux.
-
-#### VPN 
+#### VPN how to 
 ##### Setup openvpn server  
 ```bash
 ansible-playbook playbooks/openvpn-server.yml
 ```
 
 ##### Add host to VPN network
-1. Add *newhost* into **openvpn_clients** and **openvpn_server_clients** lists of [environments/test/group_vars/openvpn-server](environments/test/group_vars/openvpn-server)
+1. Add *newhost* into list of **openvpn_clients** and **openvpn_server_clients** in [environments/test/group_vars/openvpn-server](environments/test/group_vars/openvpn-server) file
 2. Add *newhost* credentials to the **openvpn-client** group of [environments/test/inventory](environments/test/inventory) file.
-Update OpenVPN server (generate keys for client):
+
+3. Update OpenVPN server (generate keys for client) and download:
 ```bash
 ansible-playbook -i environments/test/inventory playbooks/openvpn-server.yml
 ```
-3 . Install openvpn client on *newhost*:
+4. Install openvpn client on *newhost*:
 ```bash
 ansible-playbook -i environments/test/inventory playbooks/openvpn-client.yml --limit openvpn-server,newhost
 ```
@@ -69,7 +69,7 @@ ansible-playbook -i environments/test/inventory playbooks/openvpn-server.yml --l
 ```
 
 
-#### Users
+#### Users how to
 ##### Add ssh user 
 
 * put user's public ssh key into `roles/users/files` (or download via `roles/users/files/update_pub_keys.sh`)
@@ -90,17 +90,28 @@ ansible-playbook playbooks/users.yml
 ansible-playbook playbooks/users.yml
 ```
 
+#### DNS how to
+
+```bash
+ansible-playbook -i environments/test/inventory playbooks/dns.yml -l dns
+```
+
+1. Deploy example in vagrant vbox with [test_deploy_dns.sh](tests/test_deploy_dns.sh)
+
+2. Open Webmin UI in [https://192.168.10.101:10000](https://192.168.10.101:10000/) with *root* password *secretpassword* configured in [docker-compose.yml](roles/dns/files/docker-compose.yml)
+
+
 ### Tests
 
-[See example use cases tests](tests)
+See [vagrant tests](tests) of example use cases
+
 
 ### Roadmap
 
-* DNS server
-* Automate SSL certs with certbot (with https://certbot.eff.org/lets-encrypt/ubuntuxenial-nginx)
 * Provisioning with Terraform in addition to Vagrant
-* [Sentry storage](https://sentry.io/)
-* Logging & analytics for public services with elastic & kibana
+* Errors tracking with [Sentry](https://sentry.io/) 
+* Logging & analytics with Elastic & Kibana
+* Automate SSL certs with certbot (with https://certbot.eff.org/lets-encrypt/ubuntuxenial-nginx)
 * Scheduled backup jobs
 * Replace Graphite with M3DB
 * Team messenger (alerts sink from grafana)

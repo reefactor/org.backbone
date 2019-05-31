@@ -15,3 +15,6 @@ beacon1 ansible_host=192.168.10.102 ansible_user=vagrant
 
 [distribution-hub]
 pubhub ansible_host=192.168.10.101 ansible_user=vagrant
+
+[dns-server]
+dns ansible_host=192.168.10.101 ansible_user=vagrant

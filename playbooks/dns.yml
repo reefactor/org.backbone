@@ -1,0 +1,8 @@
+- include: base.yml
+- name : DNS server
+  hosts: dns
+  become: yes
+  roles:
+  - users
+  - docker
+  - dns
