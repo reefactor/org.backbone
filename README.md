@@ -90,6 +90,14 @@ ansible-playbook playbooks/users.yml
 ansible-playbook playbooks/users.yml
 ```
 
+
+#### Monitoring how to
+
+1. Deploy example in vagrant vbox with [test_deploy_monitoring.sh](tests/test_deploy_monitoring.sh)
+
+2. Open Grafana UI in [https://192.168.10.101:82](https://192.168.10.101:82/) with login *admin* and password *admin* configured in [docker-compose.yml](roles/monitoring_hub/files/docker-grafana-graphite/docker-compose.yml)
+
+
 #### DNS how to
 
 ```bash
