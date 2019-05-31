@@ -32,3 +32,6 @@
     src: files/artifacts.conf
     dest: /etc/nginx/conf.d/artifacts.conf
     owner: dev
+
+- name: restart nginx
+  service: name=nginx state=restarted
