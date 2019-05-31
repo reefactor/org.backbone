@@ -11,10 +11,10 @@ in [ansible](https://www.ansible.com/) playbooks.
 * **Security:** [SSH users ACL and management](roles/users/tasks/main.yml) via pub ssh keys and common sudoer user
 * **Collaboration:** [GitLab CE](roles/gitlab-server/templates/docker-compose.yml.j2) on docker based on [sameersbn's pack](https://github.com/sameersbn/docker-gitlab)
 * **Continuous integration:** [gitlab-runner](roles/gitlab-runner/tasks/main.yml) for GitLab CI
-* **Monitoring & alerting:** [Infrastructure monitoring](roles/monitoring_hub) with [collectd collector](roles/collectd_beacon), [Graphite storage and Grafana viz UI](roles/monitoring_hub/files/docker-grafana-graphite/README.md) based on [kamon](/kamon-io/docker-grafana-graphite)
+* **Monitoring & alerting:** [Infrastructure monitoring](roles/monitoring_hub) with [collectd collector](roles/collectd_beacon), [Graphite storage and Grafana viz UI](roles/monitoring_hub/files/docker-grafana-graphite/README.md) based on [kamon](https://github.com/kamon-io/docker-grafana-graphite)
 * **Frontend:** [to public web via TLS termination proxy based on nginx](roles/nginx)
-* **Distribution server:** [storage for build artifacts and docker registry](roles/distribution_hub) based on [Nexus Repository Manager 3](/sonatype/docker-nexus3)
-* **DNS server**. BIND DNS server bundled with the Webmin UI based on [sameersbn's docker-bind](/sameersbn/docker-bind)
+* **Distribution server:** [storage for build artifacts and docker registry](roles/distribution_hub) based on [Nexus Repository Manager 3](https://github.com/sonatype/docker-nexus3)
+* **DNS server**. BIND DNS server bundled with the Webmin UI based on [sameersbn's docker-bind](https://github.com/sameersbn/docker-bind)
 * .. and many more in the [roadmap](#roadmap)
 
 
