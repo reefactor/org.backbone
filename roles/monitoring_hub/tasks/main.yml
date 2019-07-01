@@ -8,8 +8,9 @@
   lineinfile:
     dest: /srv/docker-grafana-graphite/grafana/custom.ini
     state: present
-    regexp: '^;root_url = %(protocol)s://%(domain)s:%(http_port)s/'
-    line: 'root_url = {{monitoring_grafana_public_root_url}}  # %(protocol)s://%(domain)s:%(http_port)s/'
+    regexp: '^root_url'
+    insertafter: '^;root_url'
+    line: 'root_url = {{monitoring_grafana_public_root_url}}'
 
 - name: build and start docker container
   shell: |
