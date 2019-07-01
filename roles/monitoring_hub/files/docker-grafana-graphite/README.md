@@ -26,8 +26,8 @@ See other examples at https://gist.github.com/kirbysayshi/1389254
 ### Build docker ###
 
 
-- ~~80~~`82`: the Grafana web interface.
-- `81`: the Graphite web port
+- `80`: the Grafana web UI.
+- `81`: the Graphite web UI
 - `2003`: the Graphite data port
 - `8125`: the StatsD port.
 - `8126`: the StatsD administrative port.

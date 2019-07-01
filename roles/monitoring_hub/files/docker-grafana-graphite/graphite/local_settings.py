@@ -40,3 +40,8 @@ TIME_ZONE = 'UTC'
 #DATABASE_PASSWORD = 'graphite-is-awesome'
 #DATABASE_HOST = 'mysql.mycompany.com'
 #DATABASE_PORT = '3306'
+
+
+# make link or modify STATIC_ROOT, STATIC_URL in local_settings.py
+STATIC_ROOT = '/opt/graphite/webapp/content'
+STATIC_URL = '/'

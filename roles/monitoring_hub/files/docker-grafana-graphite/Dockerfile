@@ -1,4 +1,4 @@
-FROM   alpine
+FROM    alpine
 
 # ---------------- #
 #   Installation   #
@@ -48,7 +48,7 @@ RUN     git clone https://github.com/etsy/statsd.git /src/statsd                
 # Install Grafana
 RUN     mkdir /src/grafana                                                                                    &&\
         mkdir /opt/grafana                                                                                    &&\
-        wget https://s3-us-west-2.amazonaws.com/grafana-releases/release/grafana-6.0.2.linux-amd64.tar.gz -O /src/grafana.tar.gz &&\
+        wget https://s3-us-west-2.amazonaws.com/grafana-releases/release/grafana-6.2.5.linux-amd64.tar.gz -O /src/grafana.tar.gz &&\
         tar -xzf /src/grafana.tar.gz -C /opt/grafana --strip-components=1                                     &&\
         rm /src/grafana.tar.gz
 
@@ -80,6 +80,11 @@ RUN     mkdir -p /opt/graphite/storage/whisper                                  
         chmod 0664 /opt/graphite/storage/graphite.db                                                                 &&\
         cp /src/graphite-web/webapp/manage.py /opt/graphite/webapp                                                   &&\
         cd /opt/graphite/webapp/ && python manage.py migrate --run-syncdb --noinput
+
+# make link or modify STATIC_ROOT, STATIC_URL in local_settings.py
+# /opt/webapp/graphite/local_settings.py.example:#STATIC_ROOT = '/opt/graphite/static'
+# /opt/webapp/graphite/settings.py:STATIC_URL = '/static/'
+#RUN     ln -s /opt/graphite/webapp/content/ /opt/graphite/static
 
 # Configure Grafana and wizzy
 ADD     ./grafana/custom.ini /opt/grafana/conf/custom.ini
