@@ -48,5 +48,7 @@
       --name {{gitlab_ci_runner_name}} \
       --url {{gitlab_ci_url}} \
       --registration-token {{gitlab_shared_runners_registration_token}} \
+      --env "NEXUS_LOGIN=backbone-builder" \
+      --env "NEXUS_PASSWORD=backbone-pwd" \
       --limit 1 \
       --executor=shell
