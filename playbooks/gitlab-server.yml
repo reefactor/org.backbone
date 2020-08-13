@@ -1,4 +1,4 @@
-- include: base.yml
+- import_playbook: base.yml
 - name: Setup gitlab
   hosts: gitlab-server
   gather_facts: no

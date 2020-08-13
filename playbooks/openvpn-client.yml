@@ -1,6 +1,4 @@
----
-- include: base.yml
-
+- import_playbook: base.yml
 - hosts: openvpn-server
   become: yes
   tasks:

@@ -1,4 +1,4 @@
-- include: python2.yml
+- import_playbook: base.yml
 - hosts: all
   gather_facts: no
   become: yes

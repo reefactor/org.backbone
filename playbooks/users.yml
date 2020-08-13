@@ -1,6 +1,4 @@
----
-- include: base.yml
-
+- import_playbook: base.yml
 - name: Maintain users
   hosts: all
   become: true

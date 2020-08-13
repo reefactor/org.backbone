@@ -1,37 +1,51 @@
 # org.backbone
 
-Build your own team IT infrastructure with blackjack OpenVPN and GitLab CI.
+Collection of [ansible](https://www.ansible.com/) playbooks for most popular IT infastructure tools
+ready for [deploy and maintainance](https://en.wikipedia.org/wiki/Infrastructure_as_code).
 
-Deploy and maintain [infrastructure as code](https://en.wikipedia.org/wiki/Infrastructure_as_code) 
-in [ansible](https://www.ansible.com/) playbooks.
+Bootstrap from zero to playground in 30 minutes with automated [vagrant tests](tests).
 
- 
+Build your own team IT infrastructure with ~blackjack~ encrypted private cloud, messenger, VPN and GitLab.
+
+
 ### Features
-* **Privacy:** [OpenVPN](roles/openvpn-base/tasks/main.yml) and [keys management](environments/test/group_vars/openvpn-server) based on [Stouts.openvpn ansible role](https://github.com/Stouts/Stouts.openvpn/)
-* **Security:** [SSH users ACL and management](roles/users/tasks/main.yml) via pub ssh keys and common sudoer user
-* **Collaboration:** [GitLab CE](roles/gitlab-server/templates/docker-compose.yml.j2) on docker based on [sameersbn's pack](https://github.com/sameersbn/docker-gitlab)
-* **Continuous integration:** [gitlab-runner](roles/gitlab-runner/tasks/main.yml) for GitLab CI
-* **Monitoring & alerting:** [Infrastructure monitoring](roles/monitoring_hub) with [collectd collector](roles/collectd_beacon), [Graphite storage and Grafana viz UI](roles/monitoring_hub/files/docker-grafana-graphite/README.md) based on [kamon](https://github.com/kamon-io/docker-grafana-graphite)
-* **Frontend:** [to public web via TLS termination proxy based on nginx](roles/nginx)
-* **Distribution server:** [storage for build artifacts and docker registry](roles/distribution_hub) based on [Nexus Repository Manager 3](https://github.com/sonatype/docker-nexus3)
-* **DNS server**. BIND DNS server bundled with the Webmin UI based on [sameersbn's docker-bind](https://github.com/sameersbn/docker-bind)
-* .. and many more in the [roadmap](#roadmap)
+
+##### Collaboration
+
+* Private [team cloud](tests/test_deploy_teamcloud.sh): sharing documents, encrypted file storage, mobile app, messenger powered by [nextcloud](https://nextcloud.com/)
+* [GitLab CE](tests/test_deploy_gitlab.sh) on docker based on [sameersbn's pack](https://github.com/sameersbn/docker-gitlab)
+* Continuous integration with [gitlab-runner](roles/gitlab-runner/tasks/main.yml)
+
+##### Infrastructure
+
+* Distribution server [storage and docker registry](roles/distribution_hub) based on [Nexus Repository Manager 3](https://github.com/sonatype/docker-nexus3)
+behind [nginx for SSL termination](roles/nginx)
+* [Infrastructure monitoring & alerting](tests/test_deploy_monitoring.sh) with [collectd collector](roles/collectd_beacon), [Graphite storage and Grafana viz UI](roles/monitoring_hub/files/docker-grafana-graphite/README.md) based on [kamon](https://github.com/kamon-io/docker-grafana-graphite)
+* BIND DNS server bundled with the Webmin UI based on [sameersbn's docker-bind](https://github.com/sameersbn/docker-bind)
+
+###### Privacy
+* [OpenVPN](tests/test_deploy_openvpn.sh) and [keys management](environments/test/group_vars/openvpn) based on [Stouts.openvpn ansible role](https://github.com/Stouts/Stouts.openvpn/)
+
+###### Security
+* [SSH users ACL and management](tests/test_deploy_users.sh) with public ssh keys and common sudoer user
+
+.. and more in the [roadmap](#roadmap)
 
 
 ### Prerequisites
 
 * Python to run ansible playbooks
-* Vagrant with Virtualbox for automated testing sandbox
+* Vagrant with Virtualbox is optional for automated testing sandbox
 ```bash
-pip install -r requirements.txt
+apt install python3-pip
+pip3 install -r requirements.txt
 ansible-galaxy install -r requirements.yml
-curl -O https://releases.hashicorp.com/vagrant/2.2.4/vagrant_2.2.4_x86_64.deb
-dpkg -i vagrant_2.2.4_x86_64.deb
+curl -O https://releases.hashicorp.com/vagrant/2.2.9/vagrant_2.2.9_x86_64.deb
+dpkg -i vagrant_2.2.9_x86_64.deb
 apt install virtualbox
 ```
 
 ### HOW-TO
-_From zero to production in 30 minutes or less_
 
 #### VPN how to 
 ##### Setup openvpn server  
@@ -69,8 +83,7 @@ ansible-playbook -i environments/test/inventory playbooks/openvpn-server.yml --l
 ```
 
 
-#### Users how to
-##### Add ssh user 
+##### Add ssh user
 
 * put user's public ssh key into `roles/users/files` (or download via `roles/users/files/update_pub_keys.sh`)
 * add pub key file to `Add users` list of `roles/users/tasks/main.yml`
@@ -109,11 +122,6 @@ ansible-playbook -i environments/test/inventory playbooks/dns.yml -l dns
 2. Open Webmin UI in [https://192.168.10.101:10000](https://192.168.10.101:10000/) with *root* password *secretpassword* configured in [docker-compose.yml](roles/dns/files/docker-compose.yml)
 
 
-### Tests
-
-See [vagrant tests](tests) of example use cases
-
-
 ### Roadmap
 
 * Provisioning with Terraform in addition to Vagrant
@@ -121,8 +129,6 @@ See [vagrant tests](tests) of example use cases
 * Logging & analytics with Elastic & Kibana
 * Automate SSL certs with certbot (with https://certbot.eff.org/lets-encrypt/ubuntuxenial-nginx)
 * Scheduled backup jobs
-* Replace Graphite with M3DB
-* Team messenger (alerts sink from grafana)
+* Replace Graphite with M3DB or Prometheus
 * Update Stouts.openvpn 2.4.0 -> 2.4.1
-* Upgrade ansible 2.3.0 -> latest
 * Upgrade iptables_raw

@@ -1,8 +1,12 @@
----
-- include: python2.yml
 - name: base
   hosts: all
   become: true
   tasks:
-    - hostname:
-        name: "{{inventory_hostname}}"
+    - name: Ensure https transport for apt
+      apt:
+        name: apt-transport-https
+        state: present
+    - name: install python-pip
+      apt:
+        name: python3-pip
+        state: latest

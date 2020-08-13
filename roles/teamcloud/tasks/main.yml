@@ -1,0 +1,24 @@
+- name: data directory
+  file:
+    path: "{{ item }}"
+    recurse: yes
+    state: directory
+    owner: root
+    group: docker
+    # TODO strict permissions after resolving docker mounted volume permission issues
+    mode: 0777
+  with_items:
+    - /nextcloud/data
+
+- name: deploy docker-compose.yml
+  copy:
+    src: files/docker-compose.yml
+    owner: dev
+    dest: /nextcloud/
+
+- name: build & start nextcloud
+  shell: |
+    docker-compose build
+    docker-compose up -d
+  args:
+    chdir: /nextcloud

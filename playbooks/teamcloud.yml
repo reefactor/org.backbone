@@ -1,8 +1,8 @@
 - import_playbook: base.yml
-- name : DNS server
-  hosts: dns
+- name : Private cloud
+  hosts: teamcloud_host
   become: yes
   roles:
   - users
   - docker
-  - dns
+  - teamcloud

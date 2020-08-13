@@ -1,34 +1,15 @@
----
-- name: Add docker repo key
-  apt_key:
-    id: "{{ docker_repo_signature }}"
-    keyserver: "{{ docker_repo_url }}"
-    state: present
-
-- name: Ensure https transport for apt
+- name: Install docker package
   apt:
-    name: apt-transport-https
+    name: docker.io
     state: present
 
-- name: Add docker repo
-  apt_repository:
-    repo: "{{ docker_repo }}"
-    mode: '644'
-    update_cache: yes
-
-- name: Install docker CE
-  apt:
-    name: "{{ docker_package }}"
-    state: present
-
-- name: Upgrade docker-py and docker-compose with pip
+- name: Install docker-compose with pip
   pip:
     name: "{{ item.name }}"
     version: "{{ item.version }}"
     state: present
   with_items:
-    - { name: docker, version: "3.7.0" }
-    - { name: docker-compose, version: "1.23.2" }
+    - { name: docker-compose, version: "1.26.2" }
 
 - name: Create docker group
   group:
@@ -37,6 +18,22 @@
 
 - name: Add user docker group
   user:
-    name: "{{ docker_user }}"
+    name: dev
     group: docker
     append: yes
+
+# As we can configure the docker daemon via the configuration
+# file `/etc/docker/daemon.json` here we take the opportunity
+# of placing one of our own at the relevant destination.
+# TODO upgrade to docker v18. and add "compress": "true" to daemon.json log-opts
+- name: Prepare default daemon configuration
+  copy:
+    src: daemon.json
+    dest: /etc/docker/daemon.json
+  register: docker_daemon_json_installed
+
+- name: Restart docker with new daemon.json defaults
+  service:
+    name: docker
+    state: restarted
+  when: docker_daemon_json_installed.changed

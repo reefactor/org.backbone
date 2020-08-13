@@ -22,14 +22,8 @@ end
 # backwards compatibility). Please don't change it unless you know what
 # you're doing.
 Vagrant.configure("2") do |config|
-  # The most common configuration options are documented and commented below.
-  # For a complete reference, please see the online documentation at
-  # https://docs.vagrantup.com.
 
-  # Every Vagrant development environment requires a box. You can search for
-  # boxes at https://atlas.hashicorp.com/search.
-  # TODO upgrade to "ubuntu/bionic64"
-  config.vm.box = "ubuntu/xenial64"
+  config.vm.box = "generic/ubuntu2004"
 
   # override default disk size
   # requires 'vagrant plugin install vagrant-disksize'

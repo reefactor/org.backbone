@@ -9,7 +9,7 @@ function teardown()
 
 function wait_service()
 {
-    local timeout=30
+    local timeout=60
     local url=$1
     local reply_keyword=$2
     while [[ $timeout -gt 0 ]]; do

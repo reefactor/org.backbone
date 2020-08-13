@@ -1,0 +1,67 @@
+version: '3.2'
+services:
+  nextcloud:
+    image: nextcloud:19-apache
+    restart: always
+    ports:
+      - 8088:80
+    volumes:
+      #- ./nextcloud2/data:/var/www/html/data
+      #- ./nextcloud2/config:/var/www/html/config
+      #- ./nextcloud2/apps:/var/www/html/apps
+      - ./nextcloud:/var/www/html
+      # - ./config.php:/var/www/html/config/config.php
+      #- /etc/localtime:/etc/localtime:ro
+    environment:
+      #- VIRTUAL_HOST=mydomain.org
+      - POSTGRES_HOST=postgresql
+      - POSTGRES_DB=nextcloud
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - NEXTCLOUD_ADMIN_PASSWORD=adminOk332233
+      - NEXTCLOUD_ADMIN_USER=nc
+      - REDIS_HOST=redis
+      # - REDIS_HOST_PORT (default: 6379) Optional port for Redis, only use for external Redis servers that run on non-standard ports.
+      # - REDIS_HOST_PASSWORD (not set by default) Redis password
+      - SMTP_HOST=email-smtp.eu-west-1.amazonaws.com
+      - SMTP_SECURE=ssl
+      - SMTP_PORT=465
+      - SMTP_AUTHTYPE=LOGIN
+      - SMTP_NAME=user
+      - SMTP_PASSWORD=secret
+      - MAIL_FROM_ADDRESS=no-reply
+      - MAIL_DOMAIN=mydomain.org
+    depends_on:
+      - postgresql
+      - redis
+
+  cron:
+    image: nextcloud:19-apache
+    restart: unless-stopped
+    volumes:
+      - ./nextcloud:/var/www/html:z
+    entrypoint: /cron.sh
+    depends_on:
+      - postgresql
+      - redis
+
+  postgresql:
+    image: postgres
+    restart: unless-stopped
+    volumes:
+      - ./postgresql_data:/var/lib/postgresql/data:z
+    environment:
+      - POSTGRES_DB=nextcloud
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+  redis:
+    image: redis:5.0.5
+    restart: unless-stopped
+    volumes:
+      - ./redis/data:/data:z
+    command: >
+      --maxmemory 1000mb
+      --save 900 1
+      --save 300 10
+      --save 60 10000
