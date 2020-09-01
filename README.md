@@ -12,7 +12,7 @@ Build your own team IT infrastructure with ~blackjack~ encrypted private cloud, 
 
 ##### Collaboration
 
-* Private [team cloud](tests/test_deploy_teamcloud.sh): sharing documents, encrypted file storage, mobile app, messenger powered by [nextcloud](https://nextcloud.com/)
+* Encrypted file storage, sharing, mobile app, messenger powered by [nextcloud](https://nextcloud.com/)
 * [GitLab CE](tests/test_deploy_gitlab.sh) on docker based on [sameersbn's pack](https://github.com/sameersbn/docker-gitlab)
 * Continuous integration with [gitlab-runner](roles/gitlab-runner/tasks/main.yml)
 

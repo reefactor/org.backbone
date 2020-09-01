@@ -19,4 +19,4 @@ pubhub ansible_host=192.168.10.101 ansible_user=vagrant
 [dns-server]
 dns ansible_host=192.168.10.101 ansible_user=vagrant
 
-teamcloud_host ansible_host=192.168.10.101 ansible_user=vagrant
+nextcloud_host ansible_host=192.168.10.101 ansible_user=vagrant
