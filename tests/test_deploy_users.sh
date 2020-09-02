@@ -6,7 +6,7 @@ source $DIR/base.sh
 vagrant up
 
 # run playbook in vagrant sandbox
-ansible-playbook -i environments/test/inventory playbooks/users.yml
+ansible-playbook -i environments/test/inventory playbooks/users.yml -l eye
 
 # check
 username=$(ssh -o StrictHostKeyChecking=no den@$vmbox1 whoami)

@@ -7,6 +7,11 @@ function teardown()
     echo $0 status: $exit_code
 }
 
+error_exit() {
+    echo "Error on line $1"
+    exit 1
+}
+
 function wait_service()
 {
     local timeout=60
@@ -28,6 +33,7 @@ function wait_service()
 }
 
 trap teardown EXIT
+trap 'error_exit $LINENO' ERR
 
 # defined in Vagrantfile
 vmbox1=192.168.10.101

@@ -124,11 +124,11 @@ ansible-playbook -i environments/test/inventory playbooks/dns.yml -l dns
 
 ### Roadmap
 
+* Update Stouts.openvpn 2.5.0 -> 3.x to support ubuntu 20.04 (2.5.0 embedded easyrsa not working with new openssl)
 * Provisioning with Terraform in addition to Vagrant
 * Errors tracking with [Sentry](https://sentry.io/) 
 * Logging & analytics with Elastic & Kibana
 * Automate SSL certs with certbot (with https://certbot.eff.org/lets-encrypt/ubuntuxenial-nginx)
 * Scheduled backup jobs
 * Replace Graphite with M3DB or Prometheus
-* Update Stouts.openvpn 2.4.0 -> 2.4.1
 * Upgrade iptables_raw

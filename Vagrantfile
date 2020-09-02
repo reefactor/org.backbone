@@ -23,7 +23,7 @@ end
 # you're doing.
 Vagrant.configure("2") do |config|
 
-  config.vm.box = "generic/ubuntu2004"
+  config.vm.box = "generic/ubuntu1804"
 
   # override default disk size
   # requires 'vagrant plugin install vagrant-disksize'
@@ -47,7 +47,7 @@ Vagrant.configure("2") do |config|
     # https://stackoverflow.com/questions/22575261/vagrant-stuck-connection-timeout-retrying
     # vb.gui = true
     # reduce first-time boot long waiting (600 sec default timeout)
-    config.vm.boot_timeout = 120
+    config.vm.boot_timeout = 180
   end
 
   config.vm.define 'vmbox1' do |vmbox|

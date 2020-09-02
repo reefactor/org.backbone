@@ -6,15 +6,16 @@ source $DIR/base.sh
 vagrant up
 
 # run playbook in vagrant sandbox
-ansible-playbook -i environments/test/inventory playbooks/openvpn-server.yml
-ansible-playbook -i environments/test/inventory playbooks/openvpn-client.yml
+ansible-playbook -i environments/test/inventory playbooks/openvpn-server.yml -l openvpn-server
+ansible-playbook -i environments/test/inventory playbooks/openvpn-client.yml -l openvpn-server,user1
+
 
 # expect playbooks/openvpn-client.yml to download key files
-if [[ ! -f /tmp/testvpnuser.zip ]]; then
-    echo 'FAILED: key files not found'
+if [[ ! -f ./vpnkeys/testvpnuser.zip ]]; then
+    echo 'FAILED: testvpnuser.zip key files not found'
     exit 1
 fi
-rm -r /tmp/*.zip
+rm -r ./vpnkeys/*.zip
 
 # wait network bootstrap
 sleep 3

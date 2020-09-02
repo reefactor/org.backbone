@@ -17,7 +17,7 @@
     mode: 0655
 
 - name: start gitlab docker
-  docker_service:
+  docker_compose:
     project_src: /home/dev/docker-gitlab
     files:
       - docker-compose.yml
