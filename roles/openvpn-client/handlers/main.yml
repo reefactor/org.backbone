@@ -3,3 +3,6 @@
   service:
     name: "openvpn@{{ openvpn_client_name }}"
     state: restarted
+
+- name: restart openvpn
+  service: name=openvpn state=restarted

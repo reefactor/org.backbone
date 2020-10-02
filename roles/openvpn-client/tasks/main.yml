@@ -1,7 +1,6 @@
 ---
-- name: 'Include openvpn-base'
-  include_role:
-    name: openvpn-base
+- name: install openvpn
+  apt: name='openvpn'
 
 - name: Extract ovpn client zip into /etc/openvpn
   unarchive:

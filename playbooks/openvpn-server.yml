@@ -1,6 +1,43 @@
-- import_playbook: base.yml
 - hosts: openvpn-server
   become: yes
+  vars:
+    # Integrate EasyRSA and OpenVPN
+    # EasyRSA
+    easyrsa_generate_dh: true
+    easyrsa_servers:
+      - name: server
+    easyrsa_clients: "{{ openvpn_clients_active | selectattr('name') | list }}"
+    easyrsa_pki_dir: /etc/easyrsa/pki
+
+    # OpenVPN
+    openvpn_keydir: "{{ easyrsa_pki_dir }}"
+
+    # scripting
+    openvpn_script_output_directories:
+      - /var/log/openvpn-script-out/
+
+    openvpn_script_files:
+      - scripts/client-disconnect.sh.j2
+
+    openvpn_inline_scripts:
+      - name: my-up-script.sh
+        content: |
+          #!/usr/bin/env
+          echo 'Up!' >> "/var/up.log"
+
+    # optional
+    openvpn_download_extract: false
+    openvpn_download_clients: false
+    openvpn_open_firewall: false
+    openvpn_route_traffic: false
+    openvpn_management_enable: false
+    openvpn_client_to_client_via_ip: false
+
+    openvpn_clients: "{{ openvpn_clients_active | map(attribute='name') | list }}"
+    openvpn_ccd_configs: "{{ openvpn_clients_active }}"
+    openvpn_client_options: ["float", "log /etc/openvpn/client.log"]
+
   roles:
+    - role: nkakouros.easyrsa
     - role: Stouts.openvpn
     - role: openvpn-server

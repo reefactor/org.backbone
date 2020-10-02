@@ -1,35 +1,15 @@
-openvpn_key_country: RU
-openvpn_key_province: MSC
-openvpn_key_city: Moscow
-openvpn_key_org: org.backbone
-openvpn_key_email: no-reply@org.backbone
-openvpn_key_size: 1024
 
 openvpn_server: 10.3.0.0 255.255.255.0
-openvpn_max_clients: 640
-
-# systemd service name
-openvpn_service: openvpn@server
-openvpn_unified_client_profiles: no
-openvpn_log: /var/log/openvpn/openvpn.log
-openvpn_status: /var/log/openvpn/status.log
-openvpn_use_pam: no
-openvpn_use_ldap: no
 
 # public VPN entry point for client.conf
 openvpn_host: 192.168.10.101
 
-
-openvpn_server_options: ["ifconfig-pool-persist /etc/openvpn/ipp.txt 0", "client-config-dir /etc/openvpn/ccd"]
-openvpn_client_options: ["float", "log /etc/openvpn/client.log"]
-
-openvpn_server_clients:
+openvpn_clients_active:
   - name: testvpnuser
-    address: 10.3.0.2
-    content: ifconfig-push 10.3.0.2 255.255.255.0
-
-openvpn_clients: [
-    testvpnuser
-]
+    content: "ifconfig-push 10.3.0.2 255.255.255.0"
+  - name: dynamic_ip_user
+    content: ''
 
 openvpn_clients_revoke: []
+
+openvpn_use_pam: false

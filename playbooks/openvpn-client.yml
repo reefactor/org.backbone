@@ -1,25 +1,14 @@
-- import_playbook: base.yml
 - hosts: openvpn-server
   become: yes
   tasks:
-    - name: copy clients zip archives into separate folder
-      copy:
-        src: "/etc/openvpn/keys/{{ item }}.zip"
-        dest: "/etc/openvpn/client_zip_archives/{{ item }}.zip"
-        remote_src: True
-        owner: openvpn_client
-        group: openvpn_client
-      with_items: "{{ openvpn_clients }}"
-
     - name: 'Fetch zip archive with client credentials from openvpn-server host'
       fetch:
-        src: "/etc/openvpn/client_zip_archives/{{item}}.zip"
+        src: "/etc/openvpn/ovpns/{{item.name}}.zip"
         dest: ../vpnkeys/
         flat: yes
-      with_items: "{{ openvpn_clients }}"
+      with_items: "{{ openvpn_clients_active }}"
 
-
-- hosts: openvpn-clients
+- hosts: openvpn_clients_group
   become: yes
   roles:
     - role: openvpn-client

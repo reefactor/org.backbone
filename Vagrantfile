@@ -4,7 +4,7 @@
 #
 # Check required vagrant dependencies plugins and install them
 #
-required_plugins = %w( vagrant-disksize )
+required_plugins = %w( vagrant-disksize vagrant-reload )
 plugins_to_install = required_plugins.select { |plugin| not Vagrant.has_plugin? plugin }
 if not plugins_to_install.empty?
   puts "Installing plugins: #{plugins_to_install.join(' ')}"
@@ -17,10 +17,6 @@ if not plugins_to_install.empty?
 end
 
 
-# All Vagrant configuration is done below. The "2" in Vagrant.configure
-# configures the configuration version (we support older styles for
-# backwards compatibility). Please don't change it unless you know what
-# you're doing.
 Vagrant.configure("2") do |config|
 
   config.vm.box = "generic/ubuntu1804"
@@ -47,7 +43,7 @@ Vagrant.configure("2") do |config|
     # https://stackoverflow.com/questions/22575261/vagrant-stuck-connection-timeout-retrying
     # vb.gui = true
     # reduce first-time boot long waiting (600 sec default timeout)
-    config.vm.boot_timeout = 180
+    config.vm.boot_timeout = 60
   end
 
   config.vm.define 'vmbox1' do |vmbox|
@@ -64,4 +60,7 @@ Vagrant.configure("2") do |config|
     vmbox.vm.hostname = "vmbox2"
     vmbox.vm.network "private_network", ip: "192.168.10.102"
   end
+
+  # trigger reload after changing network
+  # config.vm.provision :reload
 end

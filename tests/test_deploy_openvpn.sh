@@ -7,6 +7,10 @@ vagrant up
 
 # run playbook in vagrant sandbox
 ansible-playbook -i environments/test/inventory playbooks/openvpn-server.yml -l openvpn-server
+# TODO FIXME openvpn service not starting until reboot
+ssh -o StrictHostKeyChecking=no vagrant@$vmbox1 "bash -c 'sleep 2; sudo reboot' &"
+sleep 20
+
 ansible-playbook -i environments/test/inventory playbooks/openvpn-client.yml -l openvpn-server,user1
 
 
@@ -17,10 +21,10 @@ if [[ ! -f ./vpnkeys/testvpnuser.zip ]]; then
 fi
 rm -r ./vpnkeys/*.zip
 
-# wait network bootstrap
-sleep 3
 
 # check
+# wait network bootstrap
+sleep 3
 ssh -o StrictHostKeyChecking=no vagrant@$vmbox2 "ping -c 3 -w 3 10.3.0.1"
 if [ $? -ne 0 ]; then
     echo 'FAILED ping testvpnuser -> vpnserver'

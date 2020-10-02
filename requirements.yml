@@ -1,2 +1,4 @@
-- src: https://github.com/Stouts/Stouts.openvpn.git
-  version: 2.5.0
+- name: Stouts.openvpn
+  src: https://github.com/Stouts/Stouts.openvpn.git
+  version: 3.1.1
+- name: nkakouros.easyrsa

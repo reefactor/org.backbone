@@ -1,8 +1,4 @@
 ---
-- name: 'Include openvpn-base'
-  include_role:
-    name: openvpn-base
-
 - name: mkdir /etc/iptables/
   file:
     path: /etc/iptables/
@@ -25,35 +21,5 @@
     rules: |
       -A POSTROUTING -o tun0 -j MASQUERADE
 
-- name: render ipp.txt
-  template:
-    src: templates/ipp.txt.j2
-    dest: /etc/openvpn/ipp.txt
-    mode: '0775'
-
-- name: render ccd/<server>
-  copy:
-    content: "{{ item.content }}"
-    dest: "/etc/openvpn/ccd/{{ item.name }}"
-    mode: '0664'
-  with_items: "{{ openvpn_server_clients }}"
-  notify:
-    - restart openvpn
-    - restart openvpn_server
-
-- name: create openvpn_client group
-  group:
-    name: openvpn_client
-    state: present
-
-- name: create openvpn_client user
-  user:
-    name: openvpn_client
-    group: openvpn_client
-
-- name: mkdir /etc/openvpn/client_zip_archives/
-  file:
-    path: /etc/openvpn/client_zip_archives/
-    state: directory
-    owner: openvpn_client
-    group: openvpn_client
+- name: Set ip forwarding
+  sysctl: name="net.ipv4.ip_forward" value=1 sysctl_set=yes state=present

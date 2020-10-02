@@ -53,30 +53,24 @@ apt install virtualbox
 ansible-playbook playbooks/openvpn-server.yml
 ```
 
-##### Add host to VPN network
-1. Add *newhost* into list of **openvpn_clients** and **openvpn_server_clients** in [environments/test/group_vars/openvpn-server](environments/test/group_vars/openvpn-server) file
-2. Add *newhost* credentials to the **openvpn-client** group of [environments/test/inventory](environments/test/inventory) file.
+##### Add user to VPN network
+1. Add new entry into list of **openvpn_clients_active** in [environments/test/group_vars/openvpn](environments/test/group_vars/openvpn).
+Client may reserve static VPN IP or dynamic otherwise.
+2. Add `newhost` credentials to the **openvpn_clients_group** in [environments/test/inventory](environments/test/inventory) 
+with corresponding `openvpn_client_name`
 
-3. Update OpenVPN server (generate keys for client) and download:
+3. Generate OpenVPN server keys for client:
 ```bash
 ansible-playbook -i environments/test/inventory playbooks/openvpn-server.yml
 ```
-4. Install openvpn client on *newhost*:
+4. Download keys and deploy to openvpn client on `newhost`:
 ```bash
 ansible-playbook -i environments/test/inventory playbooks/openvpn-client.yml --limit openvpn-server,newhost
-```
-
-##### Add user to VPN network
-1. Add *newuser* to openvpn_server_clients list of environments/test/group_vars/openvpn-server file.
-2. Update OpenVPN server (generate keys for client) and download:
-```bash
-ansible-playbook -i environments/test/inventory playbooks/openvpn-server.yml
-ansible-playbook -i environments/test/inventory playbooks/openvpn-client.yml
-ls -l ./vpnkeys/newuser.zip
+ls -l ./vpnkeys/newhost.zip
 ```
 
 ##### Revoke VPN access
-1. Add *bad_client_name* into openvpn_clients_revoke blacklist of environments/test/group_vars/openvpn-server file.
+1. Add client's name into `openvpn_clients_revoke` blacklist of [environments/test/inventory](environments/test/inventory).
 2. Update OpenVPN server:
 ```bash
 ansible-playbook -i environments/test/inventory playbooks/openvpn-server.yml --limit openvpn-server
@@ -124,7 +118,6 @@ ansible-playbook -i environments/test/inventory playbooks/dns.yml -l dns
 
 ### Roadmap
 
-* Update Stouts.openvpn 2.5.0 -> 3.x to support ubuntu 20.04 (2.5.0 embedded easyrsa not working with new openssl)
 * Provisioning with Terraform in addition to Vagrant
 * Errors tracking with [Sentry](https://sentry.io/) 
 * Logging & analytics with Elastic & Kibana
