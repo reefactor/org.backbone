@@ -25,9 +25,8 @@
           #!/usr/bin/env
           echo 'Up!' >> "/var/up.log"
 
-    # optional
+    openvpn_download_clients: true
     openvpn_download_extract: false
-    openvpn_download_clients: false
     openvpn_open_firewall: false
     openvpn_route_traffic: false
     openvpn_management_enable: false
@@ -36,7 +35,6 @@
     openvpn_clients: "{{ openvpn_clients_active | map(attribute='name') | list }}"
     openvpn_ccd_configs: "{{ openvpn_clients_active }}"
     openvpn_client_options: ["float", "log /etc/openvpn/client.log"]
-
   roles:
     - role: nkakouros.easyrsa
     - role: Stouts.openvpn

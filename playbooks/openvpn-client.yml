@@ -1,12 +1,13 @@
 - hosts: openvpn-server
   become: yes
   tasks:
-    - name: 'Fetch zip archive with client credentials from openvpn-server host'
+    - name: Download client credentials from VPN server to local {{openvpn_download_dir}}
       fetch:
-        src: "/etc/openvpn/ovpns/{{item.name}}.zip"
-        dest: ../vpnkeys/
-        flat: yes
-      with_items: "{{ openvpn_clients_active }}"
+        src: "/etc/openvpn/ovpns/{{ item.name }}.zip"
+        dest: "{{ openvpn_download_dir }}"
+        flat: true
+        validate_checksum: true
+      loop: "{{ openvpn_clients_active }}"
 
 - hosts: openvpn_clients_group
   become: yes

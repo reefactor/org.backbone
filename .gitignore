@@ -1,6 +1,7 @@
-/.vagrant
+/.vagrant/
 /.idea/
-/vpnkeys/
+/.vpnkeys/
+/.facts/
 
 # vagrant logs
 /ubuntu-xenial-16.04-cloudimg-console.log

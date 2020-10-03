@@ -54,19 +54,27 @@ ansible-playbook playbooks/openvpn-server.yml
 ```
 
 ##### Add user to VPN network
-1. Add new entry into list of **openvpn_clients_active** in [environments/test/group_vars/openvpn](environments/test/group_vars/openvpn).
-Client may reserve static VPN IP or dynamic otherwise.
-2. Add `newhost` credentials to the **openvpn_clients_group** in [environments/test/inventory](environments/test/inventory) 
-with corresponding `openvpn_client_name`
 
-3. Generate OpenVPN server keys for client:
+See example test [test_deploy_openvpn.sh](tests/test_deploy_openvpn.sh)
+
+1. Add `username` entry into list of **openvpn_clients_active** in [environments/test/group_vars/openvpn](environments/test/group_vars/openvpn).
+Client may reserve static VPN IP or dynamic otherwise.
+
+2. Generate OpenVPN server keys for client:
 ```bash
 ansible-playbook -i environments/test/inventory playbooks/openvpn-server.yml
 ```
-4. Download keys and deploy to openvpn client on `newhost`:
+
+VPN keys are downloaded to local dir `./.vpnkeys/test`.
+
+Send keys file to the user or deploy to a host VM with `playbooks/openvpn-client.yml`:
+
+3. (Optional) deploy VPN client keys to a particular host VM
+
+Add target host VM to **openvpn_clients_group** and mark with `openvpn_client_name=username` variable and run playbook:
 ```bash
-ansible-playbook -i environments/test/inventory playbooks/openvpn-client.yml --limit openvpn-server,newhost
-ls -l ./vpnkeys/newhost.zip
+ansible-playbook -i environments/test/inventory playbooks/openvpn-client.yml --limit openvpn-server,vpnhost
+ls -l ./.vpnkeys/test/newhost.zip
 ```
 
 ##### Revoke VPN access

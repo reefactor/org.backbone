@@ -5,4 +5,4 @@ source $DIR/base.sh
 # create
 vagrant up
 
-ansible-playbook -i environments/test/inventory playbooks/distribution-hub.yml -l distribution-hub
+ansible-playbook -i environments/test/inventory playbooks/distribution-hub.yml

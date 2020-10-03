@@ -1,6 +1,6 @@
 - import_playbook: base.yml
 - name : distribution hub
-  hosts: distribution-hub
+  hosts: pubhub
   become: yes
   roles:
   - users

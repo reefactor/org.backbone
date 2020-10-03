@@ -1,15 +1,17 @@
-
-openvpn_server: 10.3.0.0 255.255.255.0
-
+---
 # public VPN entry point for client.conf
 openvpn_host: 192.168.10.101
+# internal VPN IP
+openvpn_server: 10.3.0.0 255.255.255.0
 
+# all vpn user keys
 openvpn_clients_active:
-  - name: testvpnuser
+  - name: vpnhost_static
     content: "ifconfig-push 10.3.0.2 255.255.255.0"
-  - name: dynamic_ip_user
+  - name: vpnuser_laptop
     content: ''
 
 openvpn_clients_revoke: []
 
 openvpn_use_pam: false
+openvpn_download_dir: "../.vpnkeys/test/"
