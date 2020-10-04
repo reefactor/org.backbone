@@ -1,0 +1,8 @@
+- name: Install requirements
+  apt:
+    name: "{{ requirements }}"
+    update_cache: true
+  vars:
+    requirements:
+      - openvpn
+      - zip

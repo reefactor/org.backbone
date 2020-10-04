@@ -5,7 +5,7 @@ source $DIR/base.sh
 # create sandbox
 vagrant up
 
- cleanup
+# cleanup
 if [[ -e $DIR/.vpnkeys/test ]]; then
 rm -rf $DIR/.vpnkeys/test
 fi
@@ -27,8 +27,8 @@ do
   fi
 done
 
-# deploy vpn keys to hostname
-ansible-playbook -i environments/test/inventory playbooks/openvpn-client.yml -l openvpn-server,vpnhost
+# deploy vpn keys
+ansible-playbook -i environments/test/inventory playbooks/openvpn-client.yml
 
 
 # check

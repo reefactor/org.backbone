@@ -14,4 +14,4 @@ openvpn_clients_active:
 openvpn_clients_revoke: []
 
 openvpn_use_pam: false
-openvpn_download_dir: "../.vpnkeys/test/"
+openvpn_download_dir: "{{ vpnkeys_dir }}"

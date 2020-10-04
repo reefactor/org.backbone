@@ -35,6 +35,20 @@
     openvpn_clients: "{{ openvpn_clients_active | map(attribute='name') | list }}"
     openvpn_ccd_configs: "{{ openvpn_clients_active }}"
     openvpn_client_options: ["float", "log /etc/openvpn/client.log"]
+
+  pre_tasks:
+    - name: "Validate server configuration"
+      assert:
+        that:
+          - "openvpn_download_clients is true"
+          - "openvpn_clients | length > 0"
+        msg: "Invalid server configuration"
+
+  post_tasks:
+    - name: "INFO: VPN clients keys are downloaded to {{openvpn_download_dir}}"
+      debug:
+        var: openvpn_clients
+        verbosity: 0
   roles:
     - role: nkakouros.easyrsa
     - role: Stouts.openvpn

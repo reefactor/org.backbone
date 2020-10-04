@@ -1,10 +1,9 @@
 ---
-- name: install openvpn
-  apt: name='openvpn'
+- include_tasks: "{{ ansible_os_family }}.yml"
 
-- name: Extract ovpn client zip into /etc/openvpn
+- name: "Deploy VPN keys from {{vpnkeys_dir}}/{{openvpn_client_name}}.zip"
   unarchive:
-    src: ../{{ openvpn_download_dir }}/{{openvpn_client_name}}.zip
+    src: "{{ vpnkeys_dir }}/{{openvpn_client_name}}.zip"
     dest: /etc/openvpn/
 
 - name: Rename /etc/openvpn/client.ovpn to client.conf
