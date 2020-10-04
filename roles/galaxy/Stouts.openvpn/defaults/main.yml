@@ -1,0 +1,229 @@
+---
+
+# This file contains fold markers (`{{{` and `}}}`). If you use an editor that
+# supports fold markers, you can use them to view this file in a pretty format.
+
+# Set to 'false' to completely disable the role
+openvpn_enabled: true
+
+# Installation {{{
+openvpn_use_external_repo: false
+# Set to 'true' to install openvpn from the upstream repo
+
+openvpn_etcdir: /etc/openvpn
+# The OpenVPN configuration directory
+
+openvpn_keydir: "{{ openvpn_etcdir }}/keys"
+# The directory where the keys will be found. This should be a pki folder from
+# easyrsa. Under this folder, the role will expect to find the pem keys and
+# certificates for:
+#
+# - the server (private/server.key and issued/server.crt)
+# - the clients (private/client-1.key, issued/client-2.crt, etc)
+# - the ca (issued/ca.crt)
+#
+# Also:
+# - the Diffie-Hellman parameters should be also located there (dh.pem)
+# - the CA certificate (ca.pem)
+#
+# You can generate these keys and certificates using another role. See the
+# README. Then you can simply point this variable to the pki folder of the
+# easyrsa installation and all keys/certificates will be located fine.
+# }}}
+# Server configuration {{{
+# Default settings (See OpenVPN documentation)
+openvpn_host: "{{ inventory_hostname }}"
+
+openvpn_port: '1194'
+openvpn_proto: udp
+openvpn_dev: tun
+openvpn_server: 10.8.0.0 255.255.255.0
+openvpn_bridge: {}
+openvpn_max_clients: 100
+openvpn_log: /var/log/openvpn.log
+openvpn_keepalive: "10 120"
+openvpn_ifconfig_pool_persist: ipp.txt
+openvpn_comp_lzo: true
+openvpn_cipher: BF-CBC
+openvpn_status: openvpn-status.log
+openvpn_verb: 3
+openvpn_user: nobody
+openvpn_group: nogroup
+openvpn_resolv_retry: infinite
+
+openvpn_server_options: []
+# Additional server options that are not covered by the above variables. For
+# instace:
+# openvpn_server_options:
+# - dev-node MyTap
+# - client-to-client
+# }}}
+# Management {{{
+openvpn_management_enable: false
+# Whether to enable the OpenVPN management server. For more information about
+# the management server, see
+# https://github.com/OpenVPN/openvpn/blob/master/doc/management-notes.txt
+
+openvpn_management_host: localhost
+openvpn_management_port: 7505
+# Set where the management server will listen on.
+
+openvpn_management_pass: ~
+# Set a password that will be required when connecting to the management server.
+# It is important to set a password if you expose the server to the public
+# internet via `openvpn_management_host`.
+# }}}
+# Networking {{{
+# Set to true to make the vpn server NAT incoming traffic
+openvpn_route_traffic: false
+
+# Whether to create an iptables rule to allow connections to the openvpn server.
+openvpn_open_firewall: true
+
+# The interface that traffic will come in from. This is used when creating
+# firewall rules to allow the vpn server to successfully forward traffic (see
+# `openvpn_route_traffic`). The interface you specify here will limit these
+# firewall rules only to that interface. Leave this None to have the rules apply
+# to any interface.
+openvpn_out_interface: ~
+
+# A list of ranges that you want the OpenVPN server to be able to forward
+# traffic for you. Traffic from your machine to these ranges will be NATed so
+# that your IP address is hidden.
+openvpn_nat_ranges:
+  - 0.0.0.0/0
+
+# The address that will become the source address of outgoing traffic from the
+# OpenVPN server. You would want this to be the address of
+# `openvpn_out_interface`, if you have also set that variable.
+openvpn_nat_address: "{{ ansible_facts.default_ipv4.address }}"
+
+# Network ranges that the connecting clients should try to reach using the VPN
+# connection. When connecting to the OpenVPN server, it will create routes on
+# your local machine, so that any traffic from your machine to these ranges,
+# will go through the OpenVPN server. This makes sense to be the same as
+# `openvpn_nat_ranges`, but you may want to use different values. Example:
+# openvpn_route_ranges:
+#   - 192.168.0.0 255.255.255.0
+#   - 192.168.10.0 255.255.255.0
+openvpn_route_ranges: []
+
+# DNS servers to push to the connecting client to avoid leaks via DNS queries.
+openvpn_dns_servers: []
+# }}}
+# Clients {{{
+openvpn_clients:
+  - client
+# Make clients certificate
+
+openvpn_clients_revoke: []
+# Revoke clients certificates
+
+openvpn_client_options: []
+# Additional client options. These will be placed in the ovpn files of all the
+# clients.
+# openvpn_client_options:
+# - dev-node MyTap
+# - client-to-client
+
+openvpn_unified_client_profiles: false
+# Whether to embed CA, cert, and key info inside client OVPN config file.
+
+openvpn_download_clients: false
+openvpn_download_dir: "client_credentials/"
+openvpn_download_extract: "{{ openvpn_download_clients }}"
+# Download the created client credentials as a zip to the specified directory on
+# the Ansible controller and, optionally, extract them.
+
+# Whether to allow communication among clients via the openvpn server.
+# Communication is still possible via the IP layer.
+openvpn_client_to_client: true
+
+# Whether to allow communication among clients via the IP layer. Communication
+# is still possible via the OpenVPN server itself (see
+# `openvpn_client_to_client`).
+openvpn_client_to_client_via_ip: false
+
+openvpn_ccd: /etc/openvpn/ccd/
+# The ccd (clients configuration directory). This will contain files with
+# configuration directives that the server will apply per connecting client.
+
+openvpn_ccd_configs: []
+# A list of configuration directives to be placed under the ccd for the
+# specified clients. For instance:
+#
+# - name: client
+#   content: |
+#     ifconfig-push 192.168.0.2 255.255.255.0
+#
+# The above will create a file named `client` under the ccd folder containing
+# the `ifconfig-push` directive. This will be applied to the `client` when it
+# connects to the openvpn server.
+# }}}
+# Authentication {{{
+# Use PAM authentication
+openvpn_use_pam: true
+openvpn_use_pam_users: []
+# Only for Debian-based, CentOS requires 'pam_pwdfile' from third party repos.
+# If empty use system users
+# otherwise use users from the option
+# openvpn_use_pam_users:
+# - { name: user, password: password }
+
+# LDAP authentication and configuration (optional)
+openvpn_use_ldap: false
+openvpn_ldap_tlsenable: 'false'
+openvpn_ldap_follow_referrals: 'false'
+
+# Use simple authentication (default is disabled)
+openvpn_simple_auth: false
+openvpn_simple_auth_password: ""
+
+# Enable HMAC signature to TLS handshakes
+openvpn_tls_auth: false
+openvpn_tls_key: "ta.key"
+# }}}
+# Scripting {{{
+# A list of directories that the role should create and that should be
+# accessible by the OpenVPN server to write into after it has dropped
+# privileges. The OpenVPN server should run with limited privileges, e.g. with
+# `openvpn_user` set to `nobody`. Such a user will not be able to access many
+# files and directories in the file system. This means that if you want one of
+# your scripts to write to some file (e.g. under `/var/log`), that file will
+# need to be writable by the OpenVPN server. The directories included in this
+# variable will be created by the role with permissions that will allow the
+# OpenVPN server to write into them, thus your scripts will be able to create
+# and write to files inside them. Example: [`/var/log/openvpn-script-out/`].
+openvpn_script_output_directories: []
+
+# A path on the OpenVPN server where OpenVPN scripts should be uploaded to.
+openvpn_scripts_dir: "{{ openvpn_etcdir }}/scripts/"
+
+# A list of files located on the Ansible controller that the role should upload.
+# The scripts will be uploaded under `openvpn_scripts_dir`. You can reference
+# them in `openvpn_server_options` for the OpenVPN configuration option you
+# want. The files can be templates. The role comes with an example script (under
+# `templates/scripts/client-disconnect.sh.j2`) that will log client
+# disconnections. Eg:
+# ```
+# openvpn_script_files:
+#   - "scripts/client-disconnect.sh.j2"
+#   - "/home/me/ansible-stuff/script.sh"
+# ```
+openvpn_script_files: []
+
+# Similar to `openvpn_script_files` but contains a list of inline script to
+# upload. Example:
+# ```
+# openvpn_inline_scripts:
+#   - name: my-up-script.sh
+#     content: |
+#       #!/usr/bin/env
+#       echo 'Up!' >> "{{ openvpn_script_output_directories[0] }}/up.log"
+# ```
+openvpn_inline_scripts: []
+
+# NOTE The role also comes with `up` and `down` scripts that are used if you
+# enable bridge configuration (see `openvpn_bridge`). These are handled by the
+# bridge-specific tasks.
+# }}}
