@@ -19,3 +19,4 @@ beacon1 ansible_host=192.168.10.102
 pubhub ansible_host=192.168.10.101
 dns ansible_host=192.168.10.101
 nextcloud_host ansible_host=192.168.10.101
+openmediavault ansible_host=192.168.10.101

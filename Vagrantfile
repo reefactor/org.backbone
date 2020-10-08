@@ -17,9 +17,12 @@ if not plugins_to_install.empty?
 end
 
 
+vmbox_image = ENV["VMBOX_IMAGE"] || "generic/ubuntu1804"
+
+
 Vagrant.configure("2") do |config|
 
-  config.vm.box = "generic/ubuntu1804"
+  config.vm.box = vmbox_image
 
   # override default disk size
   # requires 'vagrant plugin install vagrant-disksize'

@@ -1,0 +1,17 @@
+---
+# Based on https://github.com/openmediavault/openmediavault/blob/master/vagrant/install.sh
+- name: Setup openmediavault 5 (usul) server
+  hosts: openmediavault
+  become: true
+  tasks:
+    - name: Check OS is supported
+      assert:
+        that:
+          - "ansible_distribution in ['Debian']"
+          - "ansible_distribution_version in ['10']"
+        msg: "Debian 10 host OS is required for Openmediavault 5"
+    - name: run installer script
+      shell: "{{ lookup('file', 'install_openmediavault.sh') }}"
+      args:
+        executable: /bin/bash
+      register: install_openmediavault_sh_result

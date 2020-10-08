@@ -18,8 +18,9 @@ Build your own team IT infrastructure with ~blackjack~ encrypted private cloud, 
 
 ##### Infrastructure
 
-* Distribution server [storage and docker registry](roles/distribution_hub) based on [Nexus Repository Manager 3](https://github.com/sonatype/docker-nexus3)
+* Software distribution server [storage and docker registry](roles/distribution_hub) based on [Nexus Repository Manager 3](https://github.com/sonatype/docker-nexus3)
 behind [nginx for SSL termination](roles/nginx)
+* Media [server](playbooks/openmediavault.yml) from [openmediavault.org](https://www.openmediavault.org)
 * [Infrastructure monitoring & alerting](tests/test_deploy_monitoring.sh) with [collectd collector](roles/collectd_beacon), [Graphite storage and Grafana viz UI](roles/monitoring_hub/files/docker-grafana-graphite/README.md) based on [kamon](https://github.com/kamon-io/docker-grafana-graphite)
 * BIND DNS server bundled with the Webmin UI based on [sameersbn's docker-bind](https://github.com/sameersbn/docker-bind)
 
