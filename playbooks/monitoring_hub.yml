@@ -1,7 +1,6 @@
 - import_playbook: base.yml
 - name: monitoring hub
   hosts: eye
-  gather_facts: no
   become: yes
   roles:
   - docker

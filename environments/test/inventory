@@ -1,3 +1,8 @@
+pubhub ansible_host=192.168.10.101
+dns ansible_host=192.168.10.101
+nextcloud_host ansible_host=192.168.10.101
+openmediavault ansible_host=192.168.10.101
+
 # see Vagrantfile
 [all:vars]
 ansible_ssh_user=vagrant
@@ -15,8 +20,3 @@ vpnhost ansible_host=192.168.10.102 openvpn_client_name=vpnhost_static
 [monitored]
 eye ansible_host=192.168.10.101
 beacon1 ansible_host=192.168.10.102
-
-pubhub ansible_host=192.168.10.101
-dns ansible_host=192.168.10.101
-nextcloud_host ansible_host=192.168.10.101
-openmediavault ansible_host=192.168.10.101

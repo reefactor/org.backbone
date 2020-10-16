@@ -21,7 +21,8 @@ Build your own team IT infrastructure with ~blackjack~ encrypted private cloud, 
 * Software distribution server [storage and docker registry](roles/distribution_hub) based on [Nexus Repository Manager 3](https://github.com/sonatype/docker-nexus3)
 behind [nginx for SSL termination](roles/nginx)
 * Media [server](playbooks/openmediavault.yml) from [openmediavault.org](https://www.openmediavault.org)
-* [Infrastructure monitoring & alerting](tests/test_deploy_monitoring.sh) with [collectd collector](roles/collectd_beacon), [Graphite storage and Grafana viz UI](roles/monitoring_hub/files/docker-grafana-graphite/README.md) based on [kamon](https://github.com/kamon-io/docker-grafana-graphite)
+* [Infrastructure monitoring & alerting](tests/test_deploy_monitoring.sh) with [Grafana + Prometheus](roles/monitoring_hub/files) and [collectd](roles/collectd_beacon) 
+based on [dockprom](https://github.com/stefanprodan/dockprom)
 * BIND DNS server bundled with the Webmin UI based on [sameersbn's docker-bind](https://github.com/sameersbn/docker-bind)
 
 ###### Privacy
@@ -135,5 +136,4 @@ ansible-playbook -i environments/test/inventory playbooks/dns.yml -l dns
 * Logging & analytics with Elastic & Kibana
 * Automate SSL certs with certbot (with https://certbot.eff.org/lets-encrypt/ubuntuxenial-nginx)
 * Scheduled backup jobs
-* Replace Graphite with M3DB or Prometheus
 * Upgrade iptables_raw

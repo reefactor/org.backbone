@@ -154,7 +154,7 @@ LoadPlugin memory
 #LoadPlugin powerdns
 LoadPlugin processes
 #LoadPlugin protocols
-LoadPlugin python
+#LoadPlugin python
 #LoadPlugin redis
 #LoadPlugin rrdcached
 LoadPlugin rrdtool
@@ -183,7 +183,7 @@ LoadPlugin users
 #LoadPlugin vmem
 #LoadPlugin vserver
 #LoadPlugin wireless
-LoadPlugin write_graphite
+#LoadPlugin write_graphite
 #LoadPlugin write_http
 #LoadPlugin write_kafka
 #LoadPlugin write_log
@@ -193,6 +193,7 @@ LoadPlugin write_graphite
 #LoadPlugin write_tsdb
 #LoadPlugin zfs_arc
 #LoadPlugin zookeeper
+LoadPlugin write_prometheus
 
 ##############################################################################
 # Plugin configuration                                                       #
@@ -200,6 +201,10 @@ LoadPlugin write_graphite
 # In this section configuration stubs for each plugin are provided. A desc-  #
 # ription of those options is available in the collectd.conf(5) manual page. #
 ##############################################################################
+
+<Plugin "write_prometheus">
+  Port "9103"
+</Plugin>
 
 #<Plugin aggregation>
 #	<Aggregation>
@@ -1238,7 +1243,7 @@ LoadPlugin write_graphite
 
 <Plugin write_graphite>
 	<Node "example">
-		Host "{{monitoring_graphite_host}}"
+		Host "monitoring_graphite_host"
 		Port "2003"
 		Protocol "tcp"
 		LogSendErrors true

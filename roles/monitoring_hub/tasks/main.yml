@@ -1,21 +1,17 @@
-- name: copy docker-grafana-graphite files
+- name: deploy dockprom
   copy:
-    src: files/docker-grafana-graphite
-    dest: /srv
+    src: files/dockprom
+    dest: /opt/
     owner: dev
 
-- name: configure grafana.. pub URL {{monitoring_grafana_public_root_url}}
-  lineinfile:
-    dest: /srv/docker-grafana-graphite/grafana/custom.ini
-    state: present
-    regexp: '^root_url'
-    insertafter: '^;root_url'
-    line: 'root_url = {{monitoring_grafana_public_root_url}}'
-
-- name: build and start docker container
-  shell: |
-    make prep
-    docker-compose build
-    docker-compose up -d
+- name: start containers
+  shell: docker-compose up -d
   args:
-    chdir: /srv/docker-grafana-graphite
+    chdir: /opt/dockprom
+
+# TODO fixme better way
+- name: KLUDGE fix write permissions
+  shell: chmod -R ag+rwx grafana_data prometheus_data
+  args:
+    chdir: /opt/dockprom
+    warn: false

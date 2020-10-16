@@ -10,7 +10,4 @@ ansible-playbook -i environments/test/inventory playbooks/monitoring_hub.yml -l 
 ansible-playbook -i environments/test/inventory playbooks/monitoring_node.yml -l monitored
 
 # ensure UI is available
-wait_service "http://$vmbox1/login" "Grafana"
-wait_service "http://$vmbox1:81" "Graphite Browser"
-
-# TODO ensure graphite to ensure statsd metrics from 'beacon1' monitoring_node are present
+wait_service "http://$vmbox1:3000/login" "Grafana"
