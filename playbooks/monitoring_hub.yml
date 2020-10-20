@@ -1,4 +1,3 @@
-- import_playbook: base.yml
 - name: monitoring hub
   hosts: eye
   become: yes

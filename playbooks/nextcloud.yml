@@ -1,4 +1,3 @@
-- import_playbook: base.yml
 - name : Private cloud
   hosts: nextcloud_host
   become: yes

@@ -1,6 +1,6 @@
-- name: create data storage /srv/docker/gitlab
+- name: create data storage /opt/gitlab
   file:
-    path: "/srv/docker/gitlab"
+    path: "/opt/gitlab"
     state: directory
     owner: dev
 
@@ -42,7 +42,7 @@
   # based on https://docs.gitlab.com/runner/install/docker.html
   shell: |
     docker run -d --name backbone-lab-runner --restart always \
-      -v /srv/gitlab-runner/config:/etc/gitlab-runner \
+      -v /opt/gitlab-runner/config:/etc/gitlab-runner \
       -v /var/run/docker.sock:/var/run/docker.sock \
       gitlab/gitlab-runner:latest \
     && touch ansible.runner-started.flag

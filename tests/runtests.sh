@@ -10,9 +10,7 @@ $DIR/test_deploy_openvpn.sh
 $DIR/test_deploy_dns.sh
 $DIR/test_deploy_distribution_hub.sh
 $DIR/test_deploy_nextcloud.sh
-
-# TODO fix build
-# $DIR/test_deploy_monitoring.sh
+$DIR/test_deploy_monitoring.sh
 
 # TODO fix build
 # ssh -o StrictHostKeyChecking=no vagrant@$vmbox1 "sudo service nginx stop"

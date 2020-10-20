@@ -1,4 +1,3 @@
-- import_playbook: base.yml
 - name : DNS server
   hosts: dns
   become: yes
