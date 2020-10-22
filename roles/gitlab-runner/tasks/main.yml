@@ -42,7 +42,7 @@
 - name: start gitlab-runner service
   command: gitlab-runner start
 
-- name: register gitlab-runner {{gitlab_ci_runner_name}} into gitlab CI {{gitlab_ci_url}}
+- name: register shell executor gitlab-runner {{gitlab_ci_runner_name}} into gitlab CI {{gitlab_ci_url}}
   command: |
     /usr/local/bin/gitlab-runner register --non-interactive \
       --name {{gitlab_ci_runner_name}} \
