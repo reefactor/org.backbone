@@ -49,13 +49,12 @@ apt install virtualbox
 
 ### HOW-TO
 
-#### VPN how to 
-##### Setup openvpn server  
+#### VPN
 ```bash
 ansible-playbook playbooks/openvpn-server.yml
 ```
 
-##### Add user to VPN network
+##### Add user key to VPN
 
 See example test [test_deploy_openvpn.sh](tests/test_deploy_openvpn.sh)
 
@@ -82,7 +81,7 @@ Add target host VM to **openvpn_clients_group**, tag it with `openvpn_client_nam
 ansible-playbook -i environments/test/inventory playbooks/openvpn-client.yml
 ```
 
-##### Revoke VPN access
+##### Revoke VPN key
 1. Add client's name into `openvpn_clients_revoke` blacklist of [environments/test/inventory](environments/test/inventory).
 2. Update OpenVPN server:
 ```bash
@@ -111,14 +110,14 @@ ansible-playbook playbooks/users.yml
 ```
 
 
-#### Monitoring how to
+#### Monitoring
 
 1. Deploy example in vagrant vbox with [tests/test_deploy_monitoring.sh](tests/test_deploy_monitoring.sh)
 
 2. Open Grafana UI in [http://192.168.10.101:3000](http://192.168.10.101:3000/) with login *admin* and password *admin* configured in [docker-compose.yml](roles/monitoring_hub/files/dockprom/docker-compose.yml)
 
 
-#### DNS how to
+#### DNS
 
 ```bash
 ansible-playbook -i environments/test/inventory playbooks/dns.yml -l dns
