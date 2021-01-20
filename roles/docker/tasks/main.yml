@@ -2,6 +2,7 @@
   apt:
     name: docker.io
     state: present
+    update_cache: true
 
 - name: install python-pip
   apt:
@@ -42,3 +43,8 @@
     name: docker
     state: restarted
   when: docker_daemon_json_installed.changed
+
+- name: Autostart docker service after reboot
+  service:
+    name: docker
+    enabled: true
