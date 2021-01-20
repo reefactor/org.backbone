@@ -11,6 +11,9 @@ ansible_ssh_user=vagrant
 gitlab-server ansible_host=192.168.10.101
 gitlab-runner1 ansible_host=192.168.10.102
 
+[gitlab_runners]
+gitlab-runner1
+
 [openvpn]
 openvpn-server ansible_host=192.168.10.101 ansible_ssh_user=vagrant
 

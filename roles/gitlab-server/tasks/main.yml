@@ -50,15 +50,19 @@
     chdir: /home/dev/docker-gitlab/
     creates: ansible.runner-started.flag
 
-- name: register gitlab-runner ({{gitlab_runner_name}}) into gitlab CI
+- name: register docker executor gitlab-runner ({{gitlab_runner_name}}) into gitlab CI
   shell: |
     docker exec backbone-lab-runner gitlab-runner register --non-interactive \
-      --name {{gitlab_runner_name}} \
-      --url http://{{ ansible_host }}/gitlab/ci \
+      --name {{gitlab_runner_name}}       \
+      --url http://{{ ansible_host }}/ci  \
       --registration-token {{gitlab_shared_runners_registration_token}} \
-      --docker-image=python:3.6.6 \
-      --executor=docker \
+      --docker-image=python:3.8           \
+      --executor=docker                   \
     && touch ansible.runner-registered.flag
   args:
     chdir: /home/dev/docker-gitlab/
     creates: ansible.runner-registered.flag
+  register: results
+  retries: 10
+  delay: 30
+  until: results is success
