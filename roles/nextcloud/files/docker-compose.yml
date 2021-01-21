@@ -1,19 +1,26 @@
 version: '3.2'
+
 services:
+  postgresql:
+    image: postgres:12.5
+    restart: always
+    volumes:
+      - ./postgresql_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=nextcloud
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
   nextcloud:
-    image: nextcloud:19-apache
+    image: nextcloud:20.0.1-apache
     restart: always
     ports:
-      - 8088:80
+      - 127.0.0.1:8088:80
     volumes:
-      #- ./nextcloud2/data:/var/www/html/data
-      #- ./nextcloud2/config:/var/www/html/config
-      #- ./nextcloud2/apps:/var/www/html/apps
       - ./nextcloud:/var/www/html
-      # - ./config.php:/var/www/html/config/config.php
-      #- /etc/localtime:/etc/localtime:ro
+        # - ./config.php:/var/www/html/config/config.php
+        #- /etc/localtime:/etc/localtime:ro
     environment:
-      #- VIRTUAL_HOST=mydomain.org
       - POSTGRES_HOST=postgresql
       - POSTGRES_DB=nextcloud
       - POSTGRES_USER=postgres
@@ -26,42 +33,29 @@ services:
       - SMTP_HOST=email-smtp.eu-west-1.amazonaws.com
       - SMTP_SECURE=ssl
       - SMTP_PORT=465
+      # (default: LOGIN): The method used for authentication. Use PLAIN if no authentication is required.
       - SMTP_AUTHTYPE=LOGIN
-      - SMTP_NAME=user
-      - SMTP_PASSWORD=secret
+      - SMTP_NAME=AKIA4XPAKXYKA54UZL7P
+      - SMTP_PASSWORD=BJT1gv19/vJzXPQxh2nlc0LjfjQKBsI0F39lEAfkxCbB
       - MAIL_FROM_ADDRESS=no-reply
-      - MAIL_DOMAIN=mydomain.org
+      - MAIL_DOMAIN=autofaq.ai
     depends_on:
       - postgresql
       - redis
 
-  cron:
-    image: nextcloud:19-apache
-    restart: unless-stopped
-    volumes:
-      - ./nextcloud:/var/www/html:z
-    entrypoint: /cron.sh
-    depends_on:
-      - postgresql
-      - redis
+#  cron:
+#    image: nextcloud:20.0.1-apache
+#    restart: "unless-stopped"
+#    volumes:
+#      - ./nextcloud:/var/www/html
+#    entrypoint: /cron.sh
+#    depends_on:
+#      - postgresql
+#      - redis
 
-  postgresql:
-    image: postgres
-    restart: unless-stopped
-    volumes:
-      - ./postgresql_data:/var/lib/postgresql/data:z
-    environment:
-      - POSTGRES_DB=nextcloud
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
 
   redis:
     image: redis:5.0.5
-    restart: unless-stopped
+    restart: "unless-stopped"
     volumes:
       - ./redis/data:/data:z
-    command: >
-      --maxmemory 1000mb
-      --save 900 1
-      --save 300 10
-      --save 60 10000
