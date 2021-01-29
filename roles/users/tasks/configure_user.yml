@@ -1,12 +1,15 @@
-- name: "Add user {{ user }} ({{comment}})"
+- name: "Add user {{ user.name }} ({{user.comment}})"
   user:
-    name: "{{ user }}"
+    name: "{{ user.name }}"
     state: present
     shell: /bin/bash
-    groups: sudo,docker
-    comment: "{{ comment }}"
+    groups: "{{ user.groups }}"
+    comment: "{{ user.comment }}"
+    # password login is disabled by default
+    # password: "{{ 'changemedefaultVBx0X5KlxIJh23FZF6CFEanqaC0SFINrSui6' | password_hash('sha512') }}"
+    update_password: on_create
 
-- name: "Update pub keys of {{user}}"
+- name: "Update pub keys of {{user.name}}"
   authorized_key:
-    user: "{{ user }}"
-    key: "{{ key }}"
+    user: "{{ user.name }}"
+    key: "{{ pubkey }}"
