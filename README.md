@@ -133,3 +133,21 @@ ansible-playbook -i environments/test/inventory playbooks/dns.yml -l dns
 * Provisioning with Terraform in addition to Vagrant
 * Errors tracking with [Sentry](https://sentry.io/) 
 * Automate SSL certs with certbot (with https://certbot.eff.org/lets-encrypt/ubuntuxenial-nginx)
+
+
+#### Docker gists
+
+##### CASE: Expose port from docker internal network via additional docker container with [sockat](https://wiki.ipfire.org/addons/socat) tunnel.
+
+0.0.0.0:$HOSTPORT -> $TARGET_HOST:$TARGET_PORT (via socat on port 12345 in docker container named socat-tunnel)
+
+```
+docker run \
+    -d \
+    --name socat-tunnel \
+    --publish 0.0.0.0:$HOSTPORT:12345 \
+    --restart unless-stopped \
+    alpine/socat \
+    -d -d tcp-listen:12345,reuseaddr,fork tcp:$TARGET_HOST:$TARGET_PORT
+
+```
