@@ -66,13 +66,13 @@ Client may reserve static VPN IP or dynamic otherwise.
 ```bash
 ansible-playbook -i environments/test/inventory playbooks/openvpn-server.yml
 ```
+VPN keys are now downloaded to local dir `./.vpnkeys/test`.
 
-VPN keys are downloaded to local dir `./.vpnkeys/test`.
+Encrypt zip with strong key and send username.7z and the password via separate channels.
 ```bash
 ls -l ./.vpnkeys/test/
+7za a -p${ATLEAST16SYMBOLS_PASSWORD} -mhe=on vpnkeys/username.7z vpnkeys/username.zip
 ```
-Send keys file to the user.
-
 
 3. Deploy client keys (add host to VPN network)
 
