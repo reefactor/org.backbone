@@ -5,11 +5,11 @@
 - name: ensure data directory exists
   file:
     path: "{{ item }}"
-    recurse: yes
+    recurse: no
     state: directory
     owner: root
     group: docker
-    # TODO strict permissions after resolving docker mounted volume permission issues
+    # using 777 because nexus JVM uses different user TODO: fix JVM user and docker permissions issue
     mode: 0777
   with_items:
     - /nexus-repomanager/data

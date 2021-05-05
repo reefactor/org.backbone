@@ -1,3 +1,4 @@
+- import_playbook: base.yml
 - name: monitoring node
   hosts: monitored
   gather_facts: no
