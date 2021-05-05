@@ -6,7 +6,9 @@
       apt:
         name: apt-transport-https
         state: present
+
     - name: install python-pip
       apt:
         name: python3-pip
         state: latest
+        update_cache: true

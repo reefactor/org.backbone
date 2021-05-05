@@ -34,7 +34,7 @@
    - { name: "den",       key: "reefactor.keys",    groups: "sudo,docker",  comment: "admin user" }
    - { name: "devops",    key: "devops.keys",       groups: "sudo,docker",  comment: "admin user" }
    - { name: "lab",       key: "lab.keys",          groups: "docker",       comment: "can run docker" }
-   - { name: "localuser", key: "empty.keys",        groups: "localuser",    comment: "without pubkey ssh access" }
+   - { name: "localuser", key: "empty.keys",        groups: "",    comment: "without pubkey ssh access" }
 
 - name: Delete users
   user:
