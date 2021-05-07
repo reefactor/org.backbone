@@ -1,0 +1,57 @@
+version: '3.2'
+
+services:
+  postgresql:
+    image: postgres:12.5
+    restart: unless-stopped
+    volumes:
+      - ./postgresql_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=nextcloud
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+  cron:
+    image: nextcloud:stable-apache
+    restart: unless-stopped
+    volumes:
+      - ./nextcloud:/var/www/html
+    entrypoint: /cron.sh
+    depends_on:
+      - nextcloud
+
+  nextcloud:
+    image: nextcloud:stable-apache
+    restart: unless-stopped
+    ports:
+      - 8088:80
+    volumes:
+      - ./nextcloud:/var/www/html
+      # - /etc/localtime:/etc/localtime:ro  # forward timezone from host
+    environment:
+      - POSTGRES_HOST=postgresql
+      - POSTGRES_DB=nextcloud
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - NEXTCLOUD_ADMIN_PASSWORD=admin
+      - NEXTCLOUD_ADMIN_USER=admin
+      - SMTP_HOST=email-smtp.eu-west-1.amazonaws.com
+      - SMTP_SECURE=ssl
+      - SMTP_PORT=465
+      - SMTP_AUTHTYPE=LOGIN # (default: LOGIN) Use PLAIN if no authentication is required.
+      - SMTP_NAME=login
+      - SMTP_PASSWORD=pwd
+      - MAIL_FROM_ADDRESS=no-reply
+      - MAIL_DOMAIN=company.com
+      # - REDIS_HOST=redis  # override for external Redis servers
+      # - REDIS_HOST_PORT=6379   # (default: 6379) override for external Redis servers
+      # - REDIS_HOST_PASSWORD=  # (not set by default) Redis password
+    depends_on:
+      - postgresql
+      - redis
+
+  redis:
+    image: redis:5.0.5
+    restart: unless-stopped
+    volumes:
+      - ./redis/data:/data:z
