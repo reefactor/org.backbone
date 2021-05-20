@@ -133,7 +133,6 @@ ansible-playbook -i environments/test/inventory playbooks/dns.yml -l dns
 
 * Provisioning with Terraform in addition to Vagrant
 * Errors tracking with [Sentry](https://sentry.io/) 
-* Automate SSL certs with certbot (with https://certbot.eff.org/lets-encrypt/ubuntuxenial-nginx)
 
 
 #### Tools
