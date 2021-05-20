@@ -1,0 +1,10 @@
+# example use:
+# SRC_PORT=443 TARGET_HOST=10.2.3.4 TARGET_PORT=443 docker-compose up -d
+version: '3'
+
+services:
+  socat-tunnel:
+    image: alpine/socat
+    command: -d -d tcp-listen:12345,reuseaddr,fork,max-children=1000 tcp:${TARGET_HOST}:${TARGET_PORT}
+    ports:
+      - 0.0.0.0:${SRC_PORT}:12345

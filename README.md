@@ -135,19 +135,15 @@ ansible-playbook -i environments/test/inventory playbooks/dns.yml -l dns
 * Automate SSL certs with certbot (with https://certbot.eff.org/lets-encrypt/ubuntuxenial-nginx)
 
 
-#### Docker gists
+#### Tools
 
-##### CASE: Expose port from docker internal network via additional docker container with [sockat](https://wiki.ipfire.org/addons/socat) tunnel.
+##### TCP tunnel with docker and socat
+
+Use cases:
+* Expose port from docker internal network via additional docker container with [sockat](https://wiki.ipfire.org/addons/socat) tunnel.
+* tcp port forwarding from local to remote host
 
 0.0.0.0:$HOSTPORT -> $TARGET_HOST:$TARGET_PORT (via socat on port 12345 in docker container named socat-tunnel)
 
-```
-docker run \
-    -d \
-    --name socat-tunnel \
-    --publish 0.0.0.0:$HOSTPORT:12345 \
-    --restart unless-stopped \
-    alpine/socat \
-    -d -d tcp-listen:12345,reuseaddr,fork tcp:$TARGET_HOST:$TARGET_PORT
-
-```
+* trivial command-line: [docat-tunnel/docker-run-socat.sh](./socat-tunnel/docker-run-socat.sh)
+* convinient compose config: [socat-tunnel/docker-compose.yml](./socat-tunnel/docker-run-socat.sh)
