@@ -21,12 +21,13 @@ Build your own team IT infrastructure with ~blackjack~ encrypted private cloud, 
 * Software distribution server [storage and docker registry](roles/distribution_hub) based on [Nexus Repository Manager 3](https://github.com/sonatype/docker-nexus3)
 behind [nginx for SSL termination](roles/nginx)
 * Media [server](playbooks/openmediavault.yml) from [openmediavault.org](https://www.openmediavault.org)
-* [Infrastructure monitoring & alerting](tests/test_deploy_monitoring.sh) with [Grafana + Prometheus](roles/monitoring_hub/files) and [collectd](roles/collectd_beacon) 
+* [Infrastructure monitoring & alerting](tests/test_deploy_monitoring.sh) with [Grafana + Prometheus](roles/monitoring_hub/files/dockprom)
 based on [dockprom](https://github.com/stefanprodan/dockprom)
+* [Infrastructure monitoring & alerting](tests/test_deploy_monitoring.sh) with [collectd](roles/collectd_beacon) and [Graphite + Grafana + Zabbix + nginx/certbot with SSL cert autorenewal](roles/monitoring_hub/files/monitoring_hub)
 * BIND DNS server bundled with the Webmin UI based on [sameersbn's docker-bind](https://github.com/sameersbn/docker-bind)
 
 ###### Privacy
-* [OpenVPN](tests/test_deploy_openvpn.sh) and [keys management](environments/test/group_vars/openvpn) based on [Stouts.openvpn ansible role](https://github.com/Stouts/Stouts.openvpn/)
+* [OpenVPN](tests/test_deploy_openvpn.sh) and [keys management](environments/test/group_vars/openvpn.yml) based on [Stouts.openvpn ansible role](https://github.com/Stouts/Stouts.openvpn/)
 
 ###### Security
 * [SSH users ACL and management](tests/test_deploy_users.sh) with public ssh keys and common sudoer user
@@ -58,7 +59,7 @@ ansible-playbook playbooks/openvpn-server.yml
 
 See example test [test_deploy_openvpn.sh](tests/test_deploy_openvpn.sh)
 
-1. Add `username` entry into list of **openvpn_clients_active** in [environments/test/group_vars/openvpn](environments/test/group_vars/openvpn).
+1. Add `username` entry into list of **openvpn_clients_active** in [environments/test/group_vars/openvpn](environments/test/group_vars/openvpn.yml).
 Client may reserve static VPN IP or dynamic otherwise.
 
 
@@ -82,7 +83,7 @@ ansible-playbook -i environments/test/inventory playbooks/openvpn-client.yml
 ```
 
 ##### Revoke VPN key
-1. Add client's name into `openvpn_clients_revoke` blacklist of [environments/test/inventory](environments/test/inventory).
+1. Add client's name into `openvpn_clients_revoke` blacklist of [environments/test/inventory](environments/test/inventory)
 2. Update OpenVPN server:
 ```bash
 ansible-playbook -i environments/test/inventory playbooks/openvpn-server.yml --limit openvpn-server

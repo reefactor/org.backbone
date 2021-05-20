@@ -1,3 +1,4 @@
+# just dockprom installer
 - name: deploy dockprom
   copy:
     src: files/dockprom
@@ -15,3 +16,28 @@
   args:
     chdir: /opt/dockprom
     warn: false
+
+# monitoring_hub: graphite + grafana + zabbix
+- name: copy monitoring_hub configs
+  copy:
+    src: files/monitoring_hub
+    dest: /opt
+    owner: dev
+
+- name: generate nginx auth
+  shell: |
+    printf "USER:$(openssl passwd -crypt PASSWORD)\n" >> nginx/nginx-auth.htpasswd
+  args:
+    chdir: /opt/monitoring_hub
+
+- name: init-letsencrypt.sh
+  shell: |
+    bash init-letsencrypt.sh
+  args:
+    chdir: /opt/monitoring_hub
+
+- name: build and start docker containers
+  shell: |
+    docker-compose up -d
+  args:
+    chdir: /opt/monitoring_hub

@@ -15,10 +15,6 @@
     name: hddtemp
     state: restarted
 
-- name: install collectd-cuda
-  shell: |
-    pip3 install collectd-cuda
-
 - name: add hostname to /etc/hosts (FQDN lookup required for collectd to start)
   lineinfile:
     dest: /etc/hosts
@@ -31,7 +27,7 @@
     name: collectd
     state: present
 
-- name: configure /etc/collectd/collectd.conf'
+- name: configure /etc/collectd/collectd.conf to send metrics to '{{monitoring_graphite_host}}'
   template:
     src: templates/collectd.conf.j2
     dest: /etc/collectd/collectd.conf
