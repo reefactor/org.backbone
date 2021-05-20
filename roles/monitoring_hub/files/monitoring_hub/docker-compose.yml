@@ -1,0 +1,135 @@
+version: '2'
+services:
+
+  nginx:
+    restart: unless-stopped
+    image: nginx:1.20
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & /docker-entrypoint.sh nginx -g \"daemon off;\" '"
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/nginx-auth.htpasswd:/etc/nginx/nginx-auth.htpasswd
+      # certbox
+      - ./nginx/certbot/conf:/etc/letsencrypt
+      - ./nginx/certbot/www:/var/www/certbot
+
+  certbot:
+    image: certbot/certbot
+    restart: unless-stopped
+    volumes:
+      - ./nginx/certbot/conf:/etc/letsencrypt
+      - ./nginx/certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+
+  grafana:
+    restart: unless-stopped
+    image: grafana/grafana:7.4.5
+    ports:
+      - 83:3000
+    volumes:
+      - ./grafana:/var/lib/grafana
+      #- ./custom.ini:/opt/grafana/conf/custom.ini
+    # chown -R 472:472 ./grafana
+    user: "root"
+    environment:
+      GF_INSTALL_PLUGINS: grafana-clock-panel,grafana-simple-json-datasource,alexanderzobnin-zabbix-app,vonage-status-panel
+      GF_SECURITY_ADMIN_USER: ${ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_SERVER_ROOT_URL: https://grafana.orgbackbone.org
+      # if behind nginx with basicauth with different passwords
+      GF_AUTH_BASIC_ENABLED: "false"
+      GF_RENDERING_SERVER_URL: http://renderer:8081/render
+      GF_RENDERING_CALLBACK_URL: http://grafana:3000/
+      GF_LOG_FILTERS: rendering:debug
+
+  renderer:
+    image: grafana/grafana-image-renderer:2.0.1
+    ports:
+      - 8081
+    environment:
+      ENABLE_METRICS: 'true'
+
+  graphite:
+    image: graphiteapp/graphite-statsd:1.1.8-1
+    hostname: graphite
+    ports:
+      - 81:80       # nginx-gunicorn-graphite
+      #- 8080:8080   # gunicorn graphite 
+      - 2003-2004:2003-2004
+      - 2023-2024:2023-2024
+      - 8125:8125/udp
+      - 8126:8126
+    volumes:
+      - ./graphite/storage:/opt/graphite/storage
+    environment:
+      - COLLECTD=1
+      - REDIS_TAGDB=1
+
+  postgresql:
+    image: postgres:12
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: zabbix
+      POSTGRES_PASSWORD: zabbix
+      POSTGRES_DB: zabbixdb
+    volumes:
+      - ./postgresql/data:/var/lib/postgresql/data
+
+  zabbix-server:
+    image: zabbix/zabbix-server-pgsql:ubuntu-5.2-latest
+    restart: unless-stopped
+    hostname: zabbix-server-container
+    environment:
+      DB_SERVER_HOST: postgresql
+      POSTGRES_USER: zabbix
+      POSTGRES_PASSWORD: zabbix
+      POSTGRES_DB: zabbixdb
+      ZBX_HISTORYSTORAGETYPES: log,text
+      ZBX_DEBUGLEVEL: 1
+      ZBX_HOUSEKEEPINGFREQUENCY: 1
+      ZBX_MAXHOUSEKEEPERDELETE: 5000
+      ZBX_TRAPPERIMEOUT: 300
+    depends_on:
+      - postgresql
+    volumes:
+      - ./zabbix/alertscripts:/usr/lib/zabbix/alertscripts
+      - ./zabbix/externalscripts:/usr/lib/zabbix/externalscripts:z
+      - ./zabbix/modules:/var/lib/zabbix/modules:z
+      - ./zabbix/enc:/var/lib/zabbix/enc:z
+      - ./zabbix/ssh_keys:/var/lib/zabbix/ssh_keys:z
+      - ./zabbix/ssl/certs:/var/lib/zabbix/ssl/certs:z
+      - ./zabbix/ssl/keys:/var/lib/zabbix/ssl/keys:z
+      - ./zabbix/ssl/ssl_ca:/var/lib/zabbix/ssl/ssl_ca:z
+      - ./zabbix/snmptraps:/var/lib/zabbix/snmptraps:z
+      - ./zabbix/mibs:/var/lib/zabbix/mibs:z
+      - ./zabbix/export:/var/lib/zabbix/export:z
+    ports:
+      - 10051:10051
+
+  zabbix-web:
+    image: zabbix/zabbix-web-nginx-pgsql:ubuntu-5.2-latest
+    restart: unless-stopped
+    environment:
+      DB_SERVER_HOST: postgresql
+      POSTGRES_USER: zabbix
+      POSTGRES_PASSWORD: zabbix
+      POSTGRES_DB: zabbixdb
+      ZBX_SERVER_HOST: zabbix-server  # Zabbix related and Php variables
+      ZBX_POSTMAXSIZE: 64M
+      ZBX_MAXEXECUTIONTIME: 500
+    depends_on:
+      - postgresql
+      - zabbix-server
+
+  zabbix-agent:
+    image: zabbix/zabbix-agent:ubuntu-5.2-latest
+    # privileged: true # access mode for allowing resource access
+    hostname: zabbix-agent-container
+    restart: unless-stopped
+    environment:
+      - ZBX_SERVER_HOST=zabbix-server
+    ports:
+      - 10050:10050

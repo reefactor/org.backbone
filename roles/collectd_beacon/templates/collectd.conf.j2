@@ -1243,7 +1243,7 @@ LoadPlugin write_prometheus
 
 <Plugin write_graphite>
 	<Node "example">
-		Host "monitoring_graphite_host"
+		Host "{{monitoring_graphite_host}}"
 		Port "2003"
 		Protocol "tcp"
 		LogSendErrors true
